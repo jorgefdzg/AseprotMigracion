@@ -1,0 +1,7 @@
+C:\Users\wsnadm\Documents\MigracionASEV2\ConexionDB\ConexionDB\bin\Debug\ConexionDB.exe.config
+C:\Users\wsnadm\Documents\MigracionASEV2\ConexionDB\ConexionDB\bin\Debug\ConexionDB.exe
+C:\Users\wsnadm\Documents\MigracionASEV2\ConexionDB\ConexionDB\bin\Debug\ConexionDB.pdb
+C:\Users\wsnadm\Documents\MigracionASEV2\ConexionDB\ConexionDB\obj\Debug\ConexionDB.csprojResolveAssemblyReference.cache
+C:\Users\wsnadm\Documents\MigracionASEV2\ConexionDB\ConexionDB\obj\Debug\ConexionDB.csproj.CoreCompileInputs.cache
+C:\Users\wsnadm\Documents\MigracionASEV2\ConexionDB\ConexionDB\obj\Debug\ConexionDB.exe
+C:\Users\wsnadm\Documents\MigracionASEV2\ConexionDB\ConexionDB\obj\Debug\ConexionDB.pdb
