@@ -9,11 +9,9 @@ namespace ConexionDB
     public class OrdenesProcessor
     {
         public void Import() {
-           // Ordenes ord = new Ordenes();
-         //   Ordenes.Export(ord)
+            // Ordenes ord = new Ordenes();
+            //   Ordenes.Export(ord)
 
         }
-
-        public
     }
 }

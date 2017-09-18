@@ -27,5 +27,30 @@ namespace ConexionDB
         //    return SqlCommand ordCMD = serConn.CreateCommand();
 
         //}
+        public string ReturnStringConnection(Constants.conexiones conn)
+        {
+
+            switch (conn)
+            {
+                case Constants.conexiones.ASEPROTDesarrollo:
+                    return Constants.ASEPROTDesarrolloStringConn;
+                    break;
+                case Constants.conexiones.ASEPROT:
+                    return Constants.ASEPROTStringConn;
+                    break;
+                case Constants.conexiones.ASEPROTPruebas:
+                    return Constants.ASEPROTPruebasStringConn;
+                    break;
+                case Constants.conexiones.Partidas:
+                    return Constants.PartidasStringConn;
+                    break;
+                case Constants.conexiones.Talleres:
+                    return Constants.TalleresStringConn;
+                    break;
+                default:
+                    return "";
+                    break;
+            }
+        }
     }
 }

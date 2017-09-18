@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +13,7 @@ namespace ConexionDB
         public decimal idOrden { get; set; }
         public DateTime fechaCreacionOden { get; set; }
         public DateTime fechaCita { get; set; }
-        public DateTime fechaInicioTrabajo { get; set; }
+        public DateTime? fechaInicioTrabajo { get; set; }
         public string numeroOrden { get; set; }
         public int consecutivoOrden { get; set; }
         public string comentarioOrden { get; set; }
@@ -29,29 +31,119 @@ namespace ConexionDB
         public decimal idGarantia { get; set; }
         public string motivoGarantia { get; set; }
 
-            public Ordenes(decimal _idOrden, DateTime _fechaCreacionOden, DateTime _fechaCita, DateTime _fechaInicioTrabajo, string _numeroOrden, int _consecutivoOrden, string _comentarioOrden, bool _requiereGrua, int _idCatalogoEstadoUnidad, decimal _idZona, decimal _idUnidad, int _idContratoOperacion, decimal _idUsuario, int _idCatalogoTipoOrdenServicio, int _idTipoOrden, int _idEstatusOrden, decimal _idCentroTrabajo, decimal _idTaller, decimal _idGarantia, string _motivoGarantia) {
-            idOrden = _idOrden;
-            fechaCreacionOden = _fechaCreacionOden;
-            fechaCita = _fechaCita;
-            fechaInicioTrabajo = _fechaInicioTrabajo;
-            numeroOrden = _numeroOrden;
-            consecutivoOrden = _consecutivoOrden;
-            comentarioOrden = _comentarioOrden;
-            requiereGrua = _requiereGrua;
-            idCatalogoEstadoUnidad = _idCatalogoEstadoUnidad;
-            idZona = _idZona;
-            idUnidad = _idUnidad;
-            idContratoOperacion = _idContratoOperacion;
-            idUsuario = _idUsuario;
-            idCatalogoTipoOrdenServicio = _idCatalogoTipoOrdenServicio;
-            idTipoOrden = _idTipoOrden;
-            idEstatusOrden = _idEstatusOrden;
-            idCentroTrabajo = _idCentroTrabajo;
-            idTaller = _idTaller;
-            idGarantia = idGarantia;
-            motivoGarantia = _motivoGarantia;
+        //    public static Ordenes() {
+        //}
 
+        public void InsertData(Ordenes orden) {
+            LogWriter log = new LogWriter();
+            try
+            {
+                string query = "Insert into ordenes([fechaCreacionOden],[fechaCita],[fechaInicioTrabajo],[numeroOrden],[consecutivoOrden],[comentarioOrden],[requiereGrua],[idCatalogoEstadoUnidad],[idZona],[idUnidad],[idContratoOperacion],[idUsuario],[idCatalogoTipoOrdenServicio],[idTipoOrden],[idEstatusOrden],[idCentroTrabajo],[idTaller],[idGarantia],[motivoGarantia]) Values (@fechaCreacionOden, @fechaCita, @fechaInicioTrabajo, @numeroOrden, @consecutivoOrden, @comentarioOrden, @requiereGrua, @idCatalogoEstadoUnidad, @idZona, @idUnidad, @idContratoOperacion, @idUsuario, @idCatalogoTipoOrdenServicio, @idTipoOrden, @idEstatusOrden, @idCentroTrabajo, @idTaller, @idGarantia, @motivoGarantia)";
+                ConexionsDBs con = new ConexionsDBs();
+                using (SqlConnection cn = new SqlConnection(con.ReturnStringConnection((Constants.conexiones)Constants.conexiones.ASEPROTPruebas)))
+                using (SqlCommand cmd = new SqlCommand(query, cn))
+                {
+                    if (string.IsNullOrEmpty(orden.fechaCreacionOden.ToString()))
+                        cmd.Parameters.Add("@fechaCreacionOden", SqlDbType.DateTime).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@fechaCreacionOden", SqlDbType.DateTime).Value = orden.fechaCreacionOden;
+                    if (string.IsNullOrEmpty(orden.fechaCita.ToString()))
+                        cmd.Parameters.Add("@fechaCita", SqlDbType.DateTime).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@fechaCita", SqlDbType.DateTime).Value = orden.fechaCita;
+                    if (string.IsNullOrEmpty(orden.fechaInicioTrabajo.ToString()))
+                        cmd.Parameters.Add("@fechaInicioTrabajo", SqlDbType.DateTime).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@fechaInicioTrabajo", SqlDbType.DateTime).Value = orden.fechaInicioTrabajo;
+                    if (string.IsNullOrEmpty(orden.numeroOrden))
+                        cmd.Parameters.Add("@numeroOrden", SqlDbType.VarChar, 50).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@numeroOrden", SqlDbType.VarChar, 50).Value = orden.numeroOrden;
+                    if (string.IsNullOrEmpty(orden.consecutivoOrden.ToString()))
+                        cmd.Parameters.Add("@consecutivoOrden", SqlDbType.Int).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@consecutivoOrden", SqlDbType.Int).Value = orden.consecutivoOrden;
+                    if (string.IsNullOrEmpty(comentarioOrden))
+                        cmd.Parameters.Add("@comentarioOrden", SqlDbType.VarChar, 200).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@comentarioOrden", SqlDbType.VarChar, 200).Value = orden.comentarioOrden;
+                    if (string.IsNullOrEmpty(orden.requiereGrua.ToString()))
+                        cmd.Parameters.Add("@requiereGrua", SqlDbType.Bit).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@requiereGrua", SqlDbType.Bit).Value = orden.requiereGrua;
+
+                    if (string.IsNullOrEmpty(orden.idCatalogoEstadoUnidad.ToString()))
+                        cmd.Parameters.Add("@idCatalogoEstadoUnidad", SqlDbType.Int).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@idCatalogoEstadoUnidad", SqlDbType.Int).Value = orden.idCatalogoEstadoUnidad;
+
+                    if (string.IsNullOrEmpty(orden.idZona.ToString()))
+                        cmd.Parameters.Add("@idZona", SqlDbType.Decimal).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@idZona", SqlDbType.Decimal).Value = orden.idZona;
+
+                    if (string.IsNullOrEmpty(orden.idUnidad.ToString()))
+                        cmd.Parameters.Add("@idUnidad", SqlDbType.Decimal).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@idUnidad", SqlDbType.Decimal).Value = orden.idUnidad;
+
+                    if (string.IsNullOrEmpty(orden.idContratoOperacion.ToString()))
+                        cmd.Parameters.Add("@idContratoOperacion", SqlDbType.Int).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@idContratoOperacion", SqlDbType.Int).Value = orden.idContratoOperacion;
+
+                    if (string.IsNullOrEmpty(orden.idUsuario.ToString()))
+                        cmd.Parameters.Add("@idContratoOperacion", SqlDbType.Int).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@idUsuario", SqlDbType.Decimal).Value = orden.idUsuario;
+
+                    if (string.IsNullOrEmpty(orden.idCatalogoTipoOrdenServicio.ToString()))
+                        cmd.Parameters.Add("@idCatalogoTipoOrdenServicio", SqlDbType.Int).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@idCatalogoTipoOrdenServicio", SqlDbType.Int).Value = orden.idCatalogoTipoOrdenServicio;
+
+                    if (string.IsNullOrEmpty(orden.idTipoOrden.ToString()))
+                        cmd.Parameters.Add("@idCatalogoTipoOrdenServicio", SqlDbType.Int).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@idTipoOrden", SqlDbType.Int).Value = orden.idTipoOrden;
+
+                    if (string.IsNullOrEmpty(orden.idEstatusOrden.ToString()))
+                        cmd.Parameters.Add("@idEstatusOrden", SqlDbType.Int).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@idEstatusOrden", SqlDbType.Int).Value = orden.idEstatusOrden;
+
+                    if (string.IsNullOrEmpty(orden.idCentroTrabajo.ToString()))
+                        cmd.Parameters.Add("@idCentroTrabajo", SqlDbType.Decimal).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@idCentroTrabajo", SqlDbType.Decimal).Value = orden.idCentroTrabajo;
+
+                    if (string.IsNullOrEmpty(orden.idTaller.ToString()))
+                        cmd.Parameters.Add("@idTaller", SqlDbType.Decimal).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@idTaller", SqlDbType.Decimal).Value = orden.idTaller;
+
+                    if (string.IsNullOrEmpty(orden.idGarantia.ToString()))
+                        cmd.Parameters.Add("@idTaller", SqlDbType.Decimal).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@idGarantia", SqlDbType.Decimal).Value = orden.idGarantia;
+
+                    if (string.IsNullOrEmpty(orden.motivoGarantia))
+                        cmd.Parameters.Add("@idTaller", SqlDbType.Decimal).Value = "";
+                    else
+                        cmd.Parameters.Add("@motivoGarantia", SqlDbType.VarChar, 100).Value = orden.motivoGarantia;
+
+                    cn.Open();
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    cn.Close();
+                    if (rowsAffected > 0)
+                        log.WriteInLog("Registro de Orden insertado con exito" + orden.numeroOrden);
+                }
+            }
+            catch (Exception ex) {
+                log.WriteInLog("Error al insertar la orden: " + orden.numeroOrden + " Excepción:" + ex.Message);
+            }
         }
+
 
         //public static bool InsertInTable(Ordenes orden) {
                 
