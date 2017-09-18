@@ -8,6 +8,7 @@ namespace ConexionDB
 {
     public static class Constants
     {
+
         public const string ASEPROTDesarrolloStringConn = "Server = 192.168.20.9; Database = ASEPROTDesarrollo; User Id = sa; Password = S0p0rt3;";
         public const string ASEPROTStringConn = "Server = 192.168.20.18; Database = ASEPROT; User Id = sa; Password = S0p0rt3;";
         public const string ASEPROTPruebasStringConn = "Server = 192.168.20.18; Database = ASEPROTPruebas; User Id = sa; Password = S0p0rt3;";

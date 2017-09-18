@@ -30,9 +30,10 @@ namespace ConexionDB
         public decimal idTaller { get; set; }
         public decimal idGarantia { get; set; }
         public string motivoGarantia { get; set; }
+        public List<Historico> Historicos { get; set; }
+ 
 
-        //    public static Ordenes() {
-        //}
+
 
         public void InsertData(Ordenes orden) {
             LogWriter log = new LogWriter();
