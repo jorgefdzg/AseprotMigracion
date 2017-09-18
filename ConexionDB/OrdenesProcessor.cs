@@ -333,5 +333,64 @@ namespace ConexionDB
                 return id;
             }
         }
+
+        public static List<Historico> GetHistoricosOrden(SqlConnection dbCnx, int aIdCita)
+        {
+            dbCnx.Open();
+            DataTable dt = new DataTable();
+            List<Historico> historicos = new List<Historico>();
+            List<int> estatus = new List<int>{ 1,2,3,4,5,6,7,8,9,13 };
+            List<string> comandos = new List<string>
+            {
+                "select top 1 fecha from   (select * from talleres.dbo.HistorialProceso where  idTipoProceso <> 3 and idEstatus not in (17,3,11,12,13,21) ) his where idProceso = " + aIdCita + " and idEstatus in (1)  order by fecha desc" ,
+                "select top 1 fecha from   (select * from talleres.dbo.HistorialProceso where  idTipoProceso <> 3 and idEstatus not in (17,3,11,12,13,21) ) his where idProceso = " + aIdCita + " and idEstatus in (2)  order by fecha desc" ,
+                "select top 1 fecha from   (select * from talleres.dbo.HistorialProceso where  idTipoProceso <> 3 and idEstatus not in (17,3,11,12,13,21) ) his where idProceso = " + aIdCita + " and idEstatus in (15)  order by fecha desc" ,
+                "select top 1 fecha from   (select * from talleres.dbo.HistorialProceso where  idTipoProceso <> 3 and idEstatus not in (17,3,11,12,13,21) ) his where idProceso = " + aIdCita + " and idEstatus in (4)  order by fecha desc" ,
+                "select top 1 fecha from   (select * from talleres.dbo.HistorialProceso where  idTipoProceso <> 3 and idEstatus not in (17,3,11,12,13,21) ) his where idProceso = " + aIdCita + " and idEstatus in (5,23)  order by fecha desc" ,
+                "select top 1 fecha from   (select * from talleres.dbo.HistorialProceso where  idTipoProceso <> 3 and idEstatus not in (17,3,11,12,13,21) ) his where idProceso = " + aIdCita + " and idEstatus in (7)  order by fecha desc" ,
+                "select top 1 fecha from   (select * from talleres.dbo.HistorialProceso where  idTipoProceso <> 3 and idEstatus not in (17,3,11,12,13,21) ) his where idProceso = " + aIdCita + " and idEstatus in (14,19,20)  order by fecha desc" ,
+                "select top 1 fecha from   (select * from talleres.dbo.HistorialProceso where  idTipoProceso <> 3 and idEstatus not in (17,3,11,12,13,21) ) his where idProceso = " + aIdCita + " and idEstatus in (16)  order by fecha desc" ,
+                "select top 1 fecha from   (select * from talleres.dbo.HistorialProceso where  idTipoProceso <> 3 and idEstatus not in (17,3,11,12,13,21) ) his where idProceso = " + aIdCita + " and idEstatus in (24)  order by fecha desc" ,
+                "select top 1 fecha from   (select * from talleres.dbo.HistorialProceso where  idTipoProceso <> 3 and idEstatus not in (17,3,11,12,13,21) ) his where idProceso = " + aIdCita + " and idEstatus in (6,22)  order by fecha desc" ,
+
+            };
+            SqlCommand cmd;
+            
+
+            for (int i = 0; i < estatus.Count; i++)
+            {
+                cmd = new SqlCommand(comandos[i], dbCnx);
+                dt.Load(cmd.ExecuteReader());
+                if(dt.Rows.Count > 0)
+                {
+                    Historico historico = new Historico
+                    {
+                        fechaInicial = DateTime.Parse(dt.Rows[0]["fecha"].ToString()),
+                        idEstatusOrden = estatus[i],
+                        idUsuario = 171
+                    };
+                    historicos.Add(historico);
+                }
+                dt.Clear();
+            }
+
+            dbCnx.Close();
+            return historicos;
+        }
+
+        public static void GuardarRelacionCitaOrdenes(SqlConnection dbCnx, int aIdCita)
+        {
+            dbCnx.Open();
+
+            SqlCommand cmd = new SqlCommand("select idTrabajo from talleres.dbo.Trabajo where idCita = " + aIdCita,dbCnx);
+            DataTable dt = new DataTable();
+            dt.Load(cmd.ExecuteReader());
+            if(dt.Rows.Count > 0)
+            {
+
+            }
+            dbCnx.Close();
+
+        }
     }
 }

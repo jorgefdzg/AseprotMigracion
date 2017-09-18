@@ -28,8 +28,8 @@ namespace ConexionDB
         public decimal idTaller { get; set; }
         public decimal idGarantia { get; set; }
         public string motivoGarantia { get; set; }
-
-            public Ordenes()
+        public List<Historico> Historicos { get; set; }
+        public Ordenes()
             {
 
             }

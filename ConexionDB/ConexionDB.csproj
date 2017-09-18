@@ -45,11 +45,14 @@
     <Compile Include="ConexionsDBs.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Cotizaciones.cs" />
+    <Compile Include="GeneralProcessor.cs" />
+    <Compile Include="Historico.cs" />
     <Compile Include="Ordenes.cs" />
     <Compile Include="OrdenesProcessor.cs" />
     <Compile Include="Partidas.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RelacionCitaOrdenes.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
