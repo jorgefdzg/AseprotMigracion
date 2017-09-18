@@ -93,7 +93,7 @@ namespace ConexionDB
                         cmd.Parameters.Add("@idContratoOperacion", SqlDbType.Int).Value = orden.idContratoOperacion;
 
                     if (string.IsNullOrEmpty(orden.idUsuario.ToString()))
-                        cmd.Parameters.Add("@idContratoOperacion", SqlDbType.Int).Value = DBNull.Value;
+                        cmd.Parameters.Add("@idUsuario", SqlDbType.Decimal).Value = DBNull.Value;
                     else
                         cmd.Parameters.Add("@idUsuario", SqlDbType.Decimal).Value = orden.idUsuario;
 
@@ -103,7 +103,7 @@ namespace ConexionDB
                         cmd.Parameters.Add("@idCatalogoTipoOrdenServicio", SqlDbType.Int).Value = orden.idCatalogoTipoOrdenServicio;
 
                     if (string.IsNullOrEmpty(orden.idTipoOrden.ToString()))
-                        cmd.Parameters.Add("@idCatalogoTipoOrdenServicio", SqlDbType.Int).Value = DBNull.Value;
+                        cmd.Parameters.Add("@idTipoOrden", SqlDbType.Int).Value = DBNull.Value;
                     else
                         cmd.Parameters.Add("@idTipoOrden", SqlDbType.Int).Value = orden.idTipoOrden;
 
@@ -123,12 +123,12 @@ namespace ConexionDB
                         cmd.Parameters.Add("@idTaller", SqlDbType.Decimal).Value = orden.idTaller;
 
                     if (string.IsNullOrEmpty(orden.idGarantia.ToString()))
-                        cmd.Parameters.Add("@idTaller", SqlDbType.Decimal).Value = DBNull.Value;
+                        cmd.Parameters.Add("@idGarantia", SqlDbType.Decimal).Value = DBNull.Value;
                     else
                         cmd.Parameters.Add("@idGarantia", SqlDbType.Decimal).Value = orden.idGarantia;
 
                     if (string.IsNullOrEmpty(orden.motivoGarantia))
-                        cmd.Parameters.Add("@idTaller", SqlDbType.Decimal).Value = "";
+                        cmd.Parameters.Add("@motivoGarantia", SqlDbType.VarChar, 100).Value = "";
                     else
                         cmd.Parameters.Add("@motivoGarantia", SqlDbType.VarChar, 100).Value = orden.motivoGarantia;
 
