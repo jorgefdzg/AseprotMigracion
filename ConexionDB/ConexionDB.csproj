@@ -47,6 +47,7 @@
     <Compile Include="Cotizaciones.cs" />
     <Compile Include="GeneralProcessor.cs" />
     <Compile Include="Historico.cs" />
+    <Compile Include="LogWriter.cs" />
     <Compile Include="Ordenes.cs" />
     <Compile Include="OrdenesProcessor.cs" />
     <Compile Include="Partidas.cs" />
