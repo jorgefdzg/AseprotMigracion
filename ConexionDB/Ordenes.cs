@@ -29,6 +29,10 @@ namespace ConexionDB
         public decimal idGarantia { get; set; }
         public string motivoGarantia { get; set; }
 
+            public Ordenes()
+            {
+
+            }
             public Ordenes(decimal _idOrden, DateTime _fechaCreacionOden, DateTime _fechaCita, DateTime _fechaInicioTrabajo, string _numeroOrden, int _consecutivoOrden, string _comentarioOrden, bool _requiereGrua, int _idCatalogoEstadoUnidad, decimal _idZona, decimal _idUnidad, int _idContratoOperacion, decimal _idUsuario, int _idCatalogoTipoOrdenServicio, int _idTipoOrden, int _idEstatusOrden, decimal _idCentroTrabajo, decimal _idTaller, decimal _idGarantia, string _motivoGarantia) {
             idOrden = _idOrden;
             fechaCreacionOden = _fechaCreacionOden;
