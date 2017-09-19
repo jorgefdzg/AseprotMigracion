@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +32,37 @@ namespace ConexionDB
             consecutivoCotizacion = _consecutivoCotizacion;
             idCatalogoTipoOrdenServicio = _idCatalogoTipoOrdenServicio;
             idPreorden = _idPreorden;
+        }
+
+        public void InsertData(Cotizaciones cotizacion)
+        {
+            LogWriter log = new LogWriter();
+            try
+            {
+                string query = "INSERT INTO Cotizaciones([fechaCotizacion],[idTaller],[idUsuario],[idEstatusCotizacion],[idOrden],[numeroCotizacion],[consecutivoCotizacion],[idCatalogoTipoOrdenServicio],[idPreorden])VALUES(@fechaCotizacion, @idTaller, @idUsuario, @idEstatusCotizacion,@idOrden,@numeroCotizacion, @consecutivoCotizacion,@idCatalogoTipoOrdenServicio, @idPreorden)";
+                ConexionsDBs con = new ConexionsDBs();
+                using (SqlConnection cn = new SqlConnection(con.ReturnStringConnection(Constants.conexiones.ASEPROTPruebas)))
+                using (SqlCommand cmd = new SqlCommand(query,cn)) {
+                    if (string.IsNullOrEmpty(cotizacion.fechaCotizacion.ToString()))
+                        cmd.Parameters.Add("@fechaCotizacion", SqlDbType.DateTime).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@fechaCotizacion", SqlDbType.DateTime).Value = cotizacion.fechaCotizacion;
+                    if (string.IsNullOrEmpty(cotizacion.idTaller.ToString()))
+                        cmd.Parameters.Add("@idTaller", SqlDbType.Decimal).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@idTaller", SqlDbType.Decimal).Value = cotizacion.idTaller;
+                    if (string.IsNullOrEmpty(cotizacion.idUsuario.ToString()))
+                        cmd.Parameters.Add("@idUsuario", SqlDbType.Decimal).Value = DBNull.Value;
+                    else
+                        cmd.Parameters.Add("@idUsuario", SqlDbType.Decimal).Value = cotizacion.idUsuario;
+                    if (string.IsNullOrEmpty(cotizacion.idEstatusCotizacion.ToString()))
+                        cmd.Parameters.Add("@idEstatusCotizacion", SqlDbType.Int).Value = DBNull.Value;
+
+                }
+            }
+            catch (Exception ex) {
+
+            }
         }
 
     }
