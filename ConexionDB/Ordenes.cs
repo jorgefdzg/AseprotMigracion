@@ -35,13 +35,16 @@ namespace ConexionDB
 
 
 
-        public void InsertData(Ordenes orden) {
+        public static int InsertData(SqlConnection cn, Ordenes orden) {
             LogWriter log = new LogWriter();
             try
             {
+                int rowsAffected = 0;
+                int retorno = 0;
                 string query = "Insert into ordenes([fechaCreacionOden],[fechaCita],[fechaInicioTrabajo],[numeroOrden],[consecutivoOrden],[comentarioOrden],[requiereGrua],[idCatalogoEstadoUnidad],[idZona],[idUnidad],[idContratoOperacion],[idUsuario],[idCatalogoTipoOrdenServicio],[idTipoOrden],[idEstatusOrden],[idCentroTrabajo],[idTaller],[idGarantia],[motivoGarantia]) Values (@fechaCreacionOden, @fechaCita, @fechaInicioTrabajo, @numeroOrden, @consecutivoOrden, @comentarioOrden, @requiereGrua, @idCatalogoEstadoUnidad, @idZona, @idUnidad, @idContratoOperacion, @idUsuario, @idCatalogoTipoOrdenServicio, @idTipoOrden, @idEstatusOrden, @idCentroTrabajo, @idTaller, @idGarantia, @motivoGarantia)";
                 ConexionsDBs con = new ConexionsDBs();
-                using (SqlConnection cn = new SqlConnection(con.ReturnStringConnection((Constants.conexiones)Constants.conexiones.ASEPROTPruebas)))
+                //SqlConnection cn = new SqlConnection(con.ReturnStringConnection((Constants.conexiones)Constants.conexiones.ASEPROTDesarrollo));
+                //using (cn)
                 using (SqlCommand cmd = new SqlCommand(query, cn))
                 {
                     if (string.IsNullOrEmpty(orden.fechaCreacionOden.ToString()))
@@ -64,7 +67,7 @@ namespace ConexionDB
                         cmd.Parameters.Add("@consecutivoOrden", SqlDbType.Int).Value = DBNull.Value;
                     else
                         cmd.Parameters.Add("@consecutivoOrden", SqlDbType.Int).Value = orden.consecutivoOrden;
-                    if (string.IsNullOrEmpty(comentarioOrden))
+                    if (string.IsNullOrEmpty(orden.comentarioOrden))
                         cmd.Parameters.Add("@comentarioOrden", SqlDbType.VarChar, 200).Value = DBNull.Value;
                     else
                         cmd.Parameters.Add("@comentarioOrden", SqlDbType.VarChar, 200).Value = orden.comentarioOrden;
@@ -94,9 +97,9 @@ namespace ConexionDB
                         cmd.Parameters.Add("@idContratoOperacion", SqlDbType.Int).Value = orden.idContratoOperacion;
 
                     if (string.IsNullOrEmpty(orden.idUsuario.ToString()))
-                        cmd.Parameters.Add("@idUsuario", SqlDbType.Decimal).Value = DBNull.Value;
+                        cmd.Parameters.Add("@idUsuario", SqlDbType.Int).Value = DBNull.Value;
                     else
-                        cmd.Parameters.Add("@idUsuario", SqlDbType.Decimal).Value = orden.idUsuario;
+                        cmd.Parameters.Add("@idUsuario", SqlDbType.Int).Value = orden.idUsuario;
 
                     if (string.IsNullOrEmpty(orden.idCatalogoTipoOrdenServicio.ToString()))
                         cmd.Parameters.Add("@idCatalogoTipoOrdenServicio", SqlDbType.Int).Value = DBNull.Value;
@@ -134,14 +137,29 @@ namespace ConexionDB
                         cmd.Parameters.Add("@motivoGarantia", SqlDbType.VarChar, 100).Value = orden.motivoGarantia;
 
                     cn.Open();
-                    int rowsAffected = cmd.ExecuteNonQuery();
+                    rowsAffected = cmd.ExecuteNonQuery();
+                    
                     cn.Close();
                     if (rowsAffected > 0)
                         log.WriteInLog("Registro de Orden insertado con exito" + orden.numeroOrden);
                 }
+                if (rowsAffected > 0)
+                {
+                    cn.Open();
+                    SqlCommand cmd2 = new SqlCommand("select top 1 idOrden from Ordenes order by idOrden desc", cn);
+                    DataTable dt = new DataTable();
+                    dt.Load(cmd2.ExecuteReader());
+                    if (dt.Rows.Count > 0)
+                        retorno = int.Parse(dt.Rows[0]["idOrden"].ToString());
+                }
+                
+                cn.Close();
+                return retorno;
+
             }
-            catch (Exception ex) {
+            catch (Exception ex) {                
                 log.WriteInLog("Error al insertar la orden: " + orden.numeroOrden + " Excepción:" + ex.Message);
+                return 0;
             }
         }
 

@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
 
 namespace ConexionDB
 {
@@ -23,20 +28,75 @@ namespace ConexionDB
         {
             string retorno = string.Empty;
             serConn.Open();
+            orden.Historicos = orden.Historicos.OrderByDescending(o => o.idEstatusOrden).ToList();
             for (int i = 0; i < orden.Historicos.Count; i++)
             {
                 Historico item = orden.Historicos[i];
-                DateTime fechaFinal = (i == 0 || i == orden.Historicos.Count - 1) ? item.fechaInicial : orden.Historicos[i - 1].fechaFinal ?? DateTime.MinValue;
-                SqlCommand cmdH = new SqlCommand("insert into HistorialEstatusOrden (idOrden,idEstatusOrden,fechaInicial,fechaFinal,idUsuario) values(" + item.idOrden + "," + item.idEstatusOrden + "," + item.fechaInicial + "," + fechaFinal.ToString("yyyy-MM-dd") + "," + item.idUsuario);
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+                DateTime fechaFinal = i == 0 ? DateTime.MinValue : orden.Historicos[i - 1].fechaInicial;
+                if (fechaFinal != DateTime.MinValue)
+                    orden.Historicos[i].fechaFinal = fechaFinal;
+            }
+            orden.Historicos = orden.Historicos.OrderBy(o => o.idEstatusOrden).ToList();
+            for (int i = 0; i < orden.Historicos.Count; i++)
+            {
+                Historico item = orden.Historicos[i];
+                //Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+                //DateTime fechaFinal = i == orden.Historicos.Count - 1 ? item.fechaInicial : (i == 0 ? DateTime.MinValue : orden.Historicos[i - 1].fechaInicial) ;
+                //if (fechaFinal != DateTime.MinValue)
+                //    orden.Historicos[i].fechaFinal = fechaFinal;
+                DateTime fechaFinal = item.fechaFinal ?? DateTime.MinValue;
+                SqlCommand cmdH = new SqlCommand();
+                if (fechaFinal == DateTime.MinValue) 
+                    cmdH = new SqlCommand("insert into HistorialEstatusOrden (idOrden,idEstatusOrden,fechaInicial,idUsuario) values(" + item.idOrden + "," + item.idEstatusOrden + ",CAST('" + item.fechaInicial.ToString("yyyy-MM-ddThh:mm:ss") + "' AS DATETIME)," + item.idUsuario + ")",serConn);
+                else
+                    cmdH = new SqlCommand("insert into HistorialEstatusOrden (idOrden,idEstatusOrden,fechaInicial,fechaFinal,idUsuario) values(" + item.idOrden + "," + item.idEstatusOrden + ",CAST('" + item.fechaInicial.ToString("yyyy-MM-ddThh:mm:ss") + "' AS DATETIME),CAST('" + fechaFinal.ToString("yyyy-MM-ddThh:mm:ss") + "'  AS DATETIME)," + item.idUsuario + ")",serConn);
+                    
 
                 int res = cmdH.ExecuteNonQuery();
                 if (res > 0)
-                    Console.WriteLine("Historico de estatus '" + item.idEstatusOrden + "' generado.");
+                {
+                    retorno += "Historico de estatus '" + item.idEstatusOrden + "' generado.\r\n";                    
+                }
                 else
-                    Console.WriteLine("Ocurrio un error al generar el historio de estatus " + item.idEstatusOrden);
+                    throw new Exception( "Ocurrio un error al generar el historio de estatus " + item.idEstatusOrden );
             }
             serConn.Close();
             return retorno;
         }
+
+        //public static IEnumerable<T> OrderBy<T>(this IEnumerable<T> list, string sortExpression)
+        //{
+        //    sortExpression += "";
+        //    string[] parts = sortExpression.Split(' ');
+        //    bool descending = false;
+        //    string property = "";
+
+        //    if (parts.Length > 0 && parts[0] != "")
+        //    {
+        //        property = parts[0];
+
+        //        if (parts.Length > 1)
+        //        {
+        //            descending = parts[1].ToLower().Contains("esc");
+        //        }
+
+        //        PropertyInfo prop = typeof(T).GetProperty(property);
+
+        //        if (prop == null)
+        //        {
+        //            throw new Exception("No property '" + property + "' in + " + typeof(T).Name + "'");
+        //        }
+
+        //        if (descending)
+        //            return list.OrderByDescending(x => prop.GetValue(x, null));
+        //        else
+        //            return list.OrderBy(x => prop.GetValue(x, null));
+        //    }
+
+        //    return list;
+        //}
     }
+
+
 }

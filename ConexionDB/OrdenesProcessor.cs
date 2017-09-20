@@ -91,12 +91,12 @@ namespace ConexionDB
 
             {
                 dbCnx.Open();
-
-                SqlCommand cmd = new SqlCommand("select top 1 consecutivoOrden from dbo.Ordenes order by consecutivoOrden desc", dbCnx);
+                
+                SqlCommand cmd = new SqlCommand("select top 1 consecutivoOrden from dbo.Ordenes where idContratoOperacion = "+ Constants.IdContratoOperacionMigracion + " order by consecutivoOrden desc", dbCnx);
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
 
-                int consecutivo = 0;
+                int consecutivo = 1;
                 if (dt.Rows.Count > 0)
                     consecutivo = int.Parse(dt.Rows[0]["consecutivoOrden"].ToString()) + 1;
 
@@ -394,26 +394,39 @@ namespace ConexionDB
             return historicos;
         }
 
-        public static string GuardarRelacionCitaOrdenes(SqlConnection dbCnx, int aIdCita,Ordenes aOrden)
+        public static string GuardarRelacionCitaOrdenes(SqlConnection dbCnx, int aIdCita, int aIdOrden)
         {
             dbCnx.Open();
             string retorno = string.Empty;
             SqlCommand cmd = new SqlCommand("select idTrabajo from talleres.dbo.Trabajo where idCita = " + aIdCita, dbCnx);
             DataTable dt = new DataTable();
             dt.Load(cmd.ExecuteReader());
+            LogWriter log = new LogWriter();
             if (dt.Rows.Count > 0)
             {
-                ConexionsDBs con = new ConexionsDBs();
-                LogWriter log = new LogWriter();
-                string query = "insert into RelacionCitaOrdenes() values(@idCotizacionASE,@Costo,@cantidad,@precioCliente,@idPartida,@Estatus)";
+                string query = "insert into RelacionCitaOrdenes(idCitaTalleres,idTrabajoTalleres,idOrdenesAseprot) values("+ aIdCita + ","+ int.Parse(dt.Rows[0]["idTrabajo"].ToString()) +","+ aIdOrden + ")";
                 //using (SqlConnection cn = new SqlConnection(con.ReturnStringConnection((Constants.conexiones)Constants.conexiones.ASEPROTPruebas)))
-                using (cmd = new SqlCommand(query, dbCnx))
-                {
-                    int res = cmd.ExecuteNonQuery();
-                    if (res > 0)
-                        retorno = "Relación cita con orden generada.";
-                }
+                cmd = new SqlCommand(query, dbCnx);
+                
+                int res = cmd.ExecuteNonQuery();
+                if (res > 0)
+                    retorno = "Relación cita con orden generada.";
+                else
+                    throw new Exception("Ocurrio un error al insertar la el registro de relación");
             }
+            else
+            {
+                string query = "insert into RelacionCitaOrdenes(idCitaTalleres,idOrdenesAseprot) values(" + aIdCita + "," + aIdOrden + ")";
+                //using (SqlConnection cn = new SqlConnection(con.ReturnStringConnection((Constants.conexiones)Constants.conexiones.ASEPROTPruebas)))
+                cmd = new SqlCommand(query, dbCnx);
+                
+                int res = cmd.ExecuteNonQuery();
+                if (res > 0)
+                    retorno = "Relación cita con orden generada.";
+                else
+                    throw new Exception("Ocurrio un error al insertar la el registro de relación");
+            }
+            log.WriteInLog(retorno);
             dbCnx.Close();
             return retorno;
         }
