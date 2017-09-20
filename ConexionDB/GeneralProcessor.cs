@@ -30,18 +30,21 @@ namespace ConexionDB
                     Ordenes orden = OrdenesProcessor.CrearOrdenXCita(serConn, idCita);
                     #region  insert de la orden
                     //TODO
+                    int idOrden = 0;
                     #endregion
-                    orden.Historicos = OrdenesProcessor.GetHistoricosOrden(serConn, idCita);
                     #region  insert  de historicos
-                    //TODO
+                    orden.Historicos = OrdenesProcessor.GetHistoricosOrden(serConn, idCita,idOrden);
+                    Console.WriteLine(Historico.GuardarHistoricoOrdenes(serConn, orden));
+                    #endregion
+                    #region insert de la tabla relacion
+                    Console.WriteLine(OrdenesProcessor.GuardarRelacionCitaOrdenes(serConn,idCita,orden));
+                    #endregion
+                    #region guardar cotizacion detalle por cita
+                    Console.WriteLine(CotizacionDetalle.GuardarCotizacionDetallePorCita(serConn, idCita));
                     #endregion
                     ordenesXCitas.Add(orden);
-                    #region insert de la tabla relacion
-                    //TODO
-                    #endregion
-
                 }
-                                
+                Console.WriteLine(CotizacionDetalle.GuardarCotizacionDetalleCompleto(serConn));
                 serConn.Close();
             }
             catch (Exception aE)

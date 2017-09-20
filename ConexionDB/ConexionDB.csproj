@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="ConexionsDBs.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="CotizacionDetalle.cs" />
     <Compile Include="Cotizaciones.cs" />
     <Compile Include="GeneralProcessor.cs" />
     <Compile Include="Historico.cs" />

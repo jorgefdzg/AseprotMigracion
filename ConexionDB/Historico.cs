@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 
 namespace ConexionDB
 {
@@ -17,5 +18,25 @@ namespace ConexionDB
         public DateTime fechaInicial            { get { return _fechaInicial; } set { _fechaInicial = value; } }
         public DateTime? fechaFinal              { get { return _fechaFinal; } set { _fechaFinal = value; } }
         public int      idUsuario               { get { return _idUsuario; } set { _idUsuario = value; } }
+
+        public static string GuardarHistoricoOrdenes(SqlConnection serConn ,Ordenes orden)
+        {
+            string retorno = string.Empty;
+            serConn.Open();
+            for (int i = 0; i < orden.Historicos.Count; i++)
+            {
+                Historico item = orden.Historicos[i];
+                DateTime fechaFinal = (i == 0 || i == orden.Historicos.Count - 1) ? item.fechaInicial : orden.Historicos[i - 1].fechaFinal ?? DateTime.MinValue;
+                SqlCommand cmdH = new SqlCommand("insert into HistorialEstatusOrden (idOrden,idEstatusOrden,fechaInicial,fechaFinal,idUsuario) values(" + item.idOrden + "," + item.idEstatusOrden + "," + item.fechaInicial + "," + fechaFinal.ToString("yyyy-MM-dd") + "," + item.idUsuario);
+
+                int res = cmdH.ExecuteNonQuery();
+                if (res > 0)
+                    Console.WriteLine("Historico de estatus '" + item.idEstatusOrden + "' generado.");
+                else
+                    Console.WriteLine("Ocurrio un error al generar el historio de estatus " + item.idEstatusOrden);
+            }
+            serConn.Close();
+            return retorno;
+        }
     }
 }
