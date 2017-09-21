@@ -17,20 +17,7 @@ namespace ConexionDB
         public string numeroCotizacion{ get; set; }
         public int consecutivoCotizacion { get; set; }
         public int idCatalogoTipoOrdenServicio { get; set; }
-        public decimal idPreorden { get; set; }
-
-        public Cotizaciones(decimal _idCotizacion, DateTime _fechaCotizacion, decimal _idTaller, decimal _idUsuario, int _idEstatusCotizacion, decimal _idOrden, string _numeroCotizacion, int _consecutivoCotizacion, int _idCatalogoTipoOrdenServicio, int _idPreorden) {
-            idCotizacion = _idCotizacion;
-            fechaCotizacion = _fechaCotizacion;
-            idTaller = _idTaller;
-            idUsuario = _idUsuario;
-            idEstatusCotizacion = _idEstatusCotizacion;
-            idOrden = _idOrden;
-            numeroCotizacion = _numeroCotizacion;
-            consecutivoCotizacion = _consecutivoCotizacion;
-            idCatalogoTipoOrdenServicio = _idCatalogoTipoOrdenServicio;
-            idPreorden = _idPreorden;
-        }
+        public decimal? idPreorden { get; set; }
 
     }
 }

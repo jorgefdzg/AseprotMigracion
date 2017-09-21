@@ -17,7 +17,7 @@ namespace ConexionDB
                 SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
 
 
-                
+     
                 serConn.Open();
                 SqlCommand ordCMD = new SqlCommand("select * from talleres.dbo.Cita", serConn);
                 DataTable dt = new DataTable();
@@ -48,6 +48,38 @@ namespace ConexionDB
             {
                 Console.WriteLine("Ocurrio un error : " + aE.Message + "\r\n");
             }
+        }
+
+        public static void MigracionCotizacion()
+        {
+            try
+            {
+                SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
+
+
+
+                serConn.Open();
+                SqlCommand cotCMD = new SqlCommand("select * from talleres.dbo.CotizacionMaestro", serConn);
+                DataTable dt = new DataTable();
+                dt.Load(cotCMD.ExecuteReader());
+                serConn.Close();
+                List<Cotizaciones> cotizacionX = new List<Cotizaciones>();
+                foreach (DataRow dr in dt.Rows)
+                {
+                    int idCotizacion = int.Parse(dr["idCotizacion"].ToString());
+                    Cotizaciones cotizacion = CotizacionesProcessor.GetCotizacion(serConn, idCotizacion);
+                    #region  insert de la cita
+                    //TODO
+                    #endregion
+                }
+
+                serConn.Close();
+            }
+            catch (Exception aE)
+            {
+                Console.WriteLine("Ocurrio un error : " + aE.Message + "\r\n");
+            }
+
         }
     }
 }

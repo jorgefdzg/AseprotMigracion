@@ -51,5 +51,10 @@ namespace ConexionDB
             ord.InsertData(ord);
 
         }
+
+        public static void InsertCotizacionData()
+        {
+
+        }
     }
 }
