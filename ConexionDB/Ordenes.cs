@@ -30,7 +30,7 @@ namespace ConexionDB
         public decimal idTaller { get; set; }
         public decimal idGarantia { get; set; }
         public string motivoGarantia { get; set; }
-        public List<Historico> Historicos { get; set; }
+        public List<HistoricoOrdenes> Historicos { get; set; }
  
 
 
@@ -137,7 +137,7 @@ namespace ConexionDB
                     int rowsAffected = cmd.ExecuteNonQuery();
                     cn.Close();
                     if (rowsAffected > 0)
-                        log.WriteInLog("Registro de Orden insertado con exito" + orden.numeroOrden);
+                        log.WriteInLog("Registro de Orden insertado con exito " + orden.numeroOrden);
                 }
             }
             catch (Exception ex) {
