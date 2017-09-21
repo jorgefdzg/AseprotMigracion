@@ -34,14 +34,14 @@ namespace ConexionDB
             idPreorden = _idPreorden;
         }
 
-        public void InsertData(Cotizaciones cotizacion)
+        public void InsertData(SqlConnection cn, Cotizaciones cotizacion)
         {
             LogWriter log = new LogWriter();
             try
             {
                 string query = "INSERT INTO Cotizaciones([fechaCotizacion],[idTaller],[idUsuario],[idEstatusCotizacion],[idOrden],[numeroCotizacion],[consecutivoCotizacion],[idCatalogoTipoOrdenServicio],[idPreorden])VALUES(@fechaCotizacion, @idTaller, @idUsuario, @idEstatusCotizacion,@idOrden,@numeroCotizacion, @consecutivoCotizacion,@idCatalogoTipoOrdenServicio, @idPreorden)";
                 ConexionsDBs con = new ConexionsDBs();
-                using (SqlConnection cn = new SqlConnection(con.ReturnStringConnection(Constants.conexiones.ASEPROTPruebas)))
+                //using (SqlConnection cn = new SqlConnection(con.ReturnStringConnection(Constants.conexiones.ASEPROTPruebas)))
                 using (SqlCommand cmd = new SqlCommand(query,cn)) {
                     if (string.IsNullOrEmpty(cotizacion.fechaCotizacion.ToString()))
                         cmd.Parameters.Add("@fechaCotizacion", SqlDbType.DateTime).Value = DBNull.Value;
