@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Data;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+
 
 namespace ConexionDB
 {
@@ -20,47 +26,49 @@ namespace ConexionDB
         public DateTime? fechaFinal              { get { return _fechaFinal; } set { _fechaFinal = value; } }
         public int      idUsuario               { get { return _idUsuario; } set { _idUsuario = value; } }
 
-        public void InsertData(HistoricoOrdenes historico) {
-            LogWriter log = new LogWriter();
 
-            try {
-                string query = "INSERT INTO [dbo].[HistorialEstatusOrden]([idOrden],[idEstatusOrden],[fechaInicial],[fechaFinal],[idUsuario]) VALUES(@idOrden,@idEstatusOrden,@fechaInicial, @fechaFinal, @idUsuario)";
-                ConexionsDBs con = new ConexionsDBs();
-                using (SqlConnection cn = new SqlConnection(con.ReturnStringConnection(Constants.conexiones.ASEPROTPruebas)))
-                using (SqlCommand cmd = new SqlCommand(query, cn)) {
-                    if (string.IsNullOrEmpty(historico.idOrden.ToString()))
-                        cmd.Parameters.Add("@idOrden", SqlDbType.Decimal).Value = DBNull.Value;
-                    else
-                        cmd.Parameters.Add("@idOrden", SqlDbType.Decimal).Value = historico.idOrden;
-                    if (string.IsNullOrEmpty(historico.idEstatusOrden.ToString()))
-                        cmd.Parameters.Add("@idEstatusOrden", SqlDbType.Int).Value = DBNull.Value;
-                    else
-                        cmd.Parameters.Add("@idEstatusOrden", SqlDbType.Int).Value = historico.idEstatusOrden;
-                    if (string.IsNullOrEmpty(historico.fechaInicial.ToString()))
-                        cmd.Parameters.Add("@fechaInicial", SqlDbType.DateTime).Value = DBNull.Value;
-                    else
-                        cmd.Parameters.Add("@fechaInicial", SqlDbType.DateTime).Value = historico.fechaInicial;
-                    if (string.IsNullOrEmpty(historico.fechaFinal.ToString()))
-                        cmd.Parameters.Add("@fechaFinal", SqlDbType.DateTime).Value = DBNull.Value;
-                    else
-                        cmd.Parameters.Add("@fechaFinal", SqlDbType.DateTime).Value = historico.fechaFinal;
-                    if (string.IsNullOrEmpty(historico.idUsuario.ToString()))
-                        cmd.Parameters.Add("@idUsuario", SqlDbType.Decimal).Value = DBNull.Value;
-                    else
-                        cmd.Parameters.Add("@idUsuario", SqlDbType.Decimal).Value = historico.idUsuario;
+        public static string GuardarHistoricoOrdenes(SqlConnection serConn ,Ordenes orden)
+        {
+            string retorno = string.Empty;
+            serConn.Open();
+            orden.Historicos = orden.Historicos.OrderByDescending(o => o.idEstatusOrden).ToList();
+            for (int i = 0; i < orden.Historicos.Count; i++)
+            {
+                HistoricoOrdenes item = orden.Historicos[i];
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+                DateTime fechaFinal = i == 0 ? DateTime.MinValue : orden.Historicos[i - 1].fechaInicial;
+                if (fechaFinal != DateTime.MinValue)
+                    orden.Historicos[i].fechaFinal = fechaFinal;
+            }
+            orden.Historicos = orden.Historicos.OrderBy(o => o.idEstatusOrden).ToList();
+            for (int i = 0; i < orden.Historicos.Count; i++)
+            {
+                HistoricoOrdenes item = orden.Historicos[i];
+                //Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+                //DateTime fechaFinal = i == orden.Historicos.Count - 1 ? item.fechaInicial : (i == 0 ? DateTime.MinValue : orden.Historicos[i - 1].fechaInicial) ;
+                //if (fechaFinal != DateTime.MinValue)
+                //    orden.Historicos[i].fechaFinal = fechaFinal;
+                DateTime fechaFinal = item.fechaFinal ?? DateTime.MinValue;
+                SqlCommand cmdH = new SqlCommand();
+                if (fechaFinal == DateTime.MinValue) 
+                    cmdH = new SqlCommand("insert into HistorialEstatusOrden (idOrden,idEstatusOrden,fechaInicial,idUsuario) values(" + item.idOrden + "," + item.idEstatusOrden + ",CAST('" + item.fechaInicial.ToString("yyyy-MM-ddThh:mm:ss") + "' AS DATETIME)," + item.idUsuario + ")",serConn);
+                else
+                    cmdH = new SqlCommand("insert into HistorialEstatusOrden (idOrden,idEstatusOrden,fechaInicial,fechaFinal,idUsuario) values(" + item.idOrden + "," + item.idEstatusOrden + ",CAST('" + item.fechaInicial.ToString("yyyy-MM-ddThh:mm:ss") + "' AS DATETIME),CAST('" + fechaFinal.ToString("yyyy-MM-ddThh:mm:ss") + "'  AS DATETIME)," + item.idUsuario + ")",serConn);
+                    
 
-
-                    cn.Open();
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    cn.Close();
-                    if (rowsAffected > 0)
-                        log.WriteInLog("Registro de historico  de la orden ingresado con exito " + historico.idOrden.ToString() + "  estatus:" + historico.idEstatusOrden.ToString());
-
+                int res = cmdH.ExecuteNonQuery();
+                if (res > 0)
+                {
+                    retorno += "Historico de estatus '" + item.idEstatusOrden + "' generado.\r\n";                    
                 }
+                else
+                    throw new Exception( "Ocurrio un error al generar el historio de estatus " + item.idEstatusOrden );
             }
-            catch (Exception ex) {
-                log.WriteInLog("Error al insertar historico de la orden " + historico.idOrden.ToString() + " estatus:" + historico.idEstatusOrden.ToString() + " Excepción:" +  ex.Message);
-            }
+            serConn.Close();
+            return retorno;
         }
+
     }
+
+
 }

@@ -15,33 +15,34 @@ namespace ConexionDB
             try
             {
                 SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
-
-
                 
                 serConn.Open();
-                SqlCommand ordCMD = new SqlCommand("select * from talleres.dbo.Cita", serConn);
+                SqlCommand ordCMD = new SqlCommand("select  * from talleres.dbo.Cita where idCita = 89", serConn);
                 DataTable dt = new DataTable();
                 dt.Load(ordCMD.ExecuteReader());
                 serConn.Close();
                 List<Ordenes> ordenesXCitas = new List<Ordenes>();
+                    
                 foreach (DataRow dr in dt.Rows)
                 {
                     int idCita = int.Parse(dr["idCita"].ToString());
                     Ordenes orden = OrdenesProcessor.CrearOrdenXCita(serConn, idCita);
-                    #region  insert de la orden
-                    //TODO
+                    #region  insert de la orden                    
+                    int idOrden = Ordenes.InsertData(serConn,orden);
                     #endregion
-                    orden.Historicos = OrdenesProcessor.GetHistoricosOrden(serConn, idCita);
                     #region  insert  de historicos
-                    //TODO
+                    orden.Historicos = OrdenesProcessor.GetHistoricosOrden(serConn, idCita,idOrden);
+                    Console.WriteLine(Historico.GuardarHistoricoOrdenes(serConn, orden));
+                    #endregion
+                    #region insert de la tabla relacion
+                    Console.WriteLine(OrdenesProcessor.GuardarRelacionCitaOrdenes(serConn,idCita, idOrden));
+                    #endregion
+                    #region guardar cotizacion detalle por cita
+                    Console.WriteLine(CotizacionDetalle.GuardarCotizacionDetallePorCita(serConn, idCita));
                     #endregion
                     ordenesXCitas.Add(orden);
-                    #region insert de la tabla relacion
-                    //TODO
-                    #endregion
-
                 }
-                                
+                Console.WriteLine(CotizacionDetalle.GuardarCotizacionDetalleCompleto(serConn));
                 serConn.Close();
             }
             catch (Exception aE)

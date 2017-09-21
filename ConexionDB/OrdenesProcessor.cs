@@ -27,7 +27,7 @@ namespace ConexionDB
             orden.idZona = GetZona(dbCnx, aIdCita);
             orden.idUnidad = GetIdUnidad(dbCnx, aIdCita);
             orden.idContratoOperacion = 3;
-            orden.idUsuario = 171;
+            orden.idUsuario = 514;
             orden.idCatalogoTipoOrdenServicio = GeIidCatalogoTipoOrdenServicio(dbCnx, aIdCita);
             orden.idTipoOrden = GetIdTipoOrden(dbCnx, aIdCita);
             orden.idEstatusOrden = GetIdEstatus(dbCnx, aIdCita);
@@ -91,12 +91,12 @@ namespace ConexionDB
 
             {
                 dbCnx.Open();
-
-                SqlCommand cmd = new SqlCommand("select top 1 consecutivoOrden from dbo.Ordenes order by consecutivoOrden desc", dbCnx);
+                
+                SqlCommand cmd = new SqlCommand("select top 1 consecutivoOrden from dbo.Ordenes where idContratoOperacion = "+ Constants.IdContratoOperacionMigracion + " order by consecutivoOrden desc", dbCnx);
                 DataTable dt = new DataTable();
                 dt.Load(cmd.ExecuteReader());
 
-                int consecutivo = 0;
+                int consecutivo = 1;
                 if (dt.Rows.Count > 0)
                     consecutivo = int.Parse(dt.Rows[0]["consecutivoOrden"].ToString()) + 1;
 
@@ -311,7 +311,7 @@ namespace ConexionDB
 
                 SqlCommand cmd = new SqlCommand(@"select case when estFinal = 1 then 1  when estFinal = 2 then 2  when estFinal = 15 then 3  when estFinal = 4 then 4  
                                         when estFinal = 5 then 5  when estFinal = 23 then 5  when estFinal = 7 then 6  when estFinal = 14 then 7  when estFinal = 19 then 7
-                                        when estFinal = 20 then 7  when estFinal = 16 then 8 when estFinal = 24 then 9 when estFinal = 6 then 13 when estFinal = 22 then 13
+                                        when estFinal = 20 then 7  when estFinal = 16 then 14 when estFinal = 24 then 8 when estFinal = 6 then 13 when estFinal = 22 then 13
                                         else 0
                                         end as estatus
                                         from(
@@ -333,12 +333,23 @@ namespace ConexionDB
                 {
                     id = int.Parse(dt.Rows[0]["estatus"].ToString());
                 }
+
+                cmd = new SqlCommand(@"select CASE  WHEN COP_STATUS = 1 THEN 9 WHEN COP_STATUS = 2 THEN 3 WHEN COP_STATUS = 4 THEN 11 WHEN COP_STATUS = 3 THEN 12 END AS EstatusCopade from [192.168.20.31].[GAAutoExpress].[dbo].[ADE_COPADE] where COP_ORDENGLOBAL COLLATE SQL_Latin1_General_CP1_CI_AS IN(
+                                select numeroTrabajoAgrupado from talleres.dbo.TrabajoAgrupado where idTrabajoAgrupado in 
+                                (select idTrabajoAgrupado from talleres.dbo.TrabajoAgrupadoDetalle where idDatosCopadeOrden = 
+                                (select idDatosCopadeOrden from talleres.dbo.DatosCopadeOrden where idTrabajo = 
+                                (select idTrabajo from talleres.dbo.Trabajo where idCita = " + aIdCita + ")))) ",dbCnx);
+                DataTable dt2 = new DataTable();
+                dt2.Load(cmd.ExecuteReader());
+                if(dt2.Rows.Count > 0)
+                    id = int.Parse(dt2.Rows[0]["EstatusCopade"].ToString());
+
                 dbCnx.Close();
                 return id;
             }
         }
 
-        public static List<Historico> GetHistoricosOrden(SqlConnection dbCnx, int aIdCita)
+        public static List<Historico> GetHistoricosOrden(SqlConnection dbCnx, int aIdCita,int aIdOrden)
         {
             dbCnx.Open();
             DataTable dt = new DataTable();
@@ -369,9 +380,10 @@ namespace ConexionDB
                 {
                     Historico historico = new Historico
                     {
+                        idOrden = aIdOrden,
                         fechaInicial = DateTime.Parse(dt.Rows[0]["fecha"].ToString()),
                         idEstatusOrden = estatus[i],
-                        idUsuario = 171
+                        idUsuario = 514
                     };
                     historicos.Add(historico);
                 }
@@ -382,19 +394,41 @@ namespace ConexionDB
             return historicos;
         }
 
-        public static void GuardarRelacionCitaOrdenes(SqlConnection dbCnx, int aIdCita)
+        public static string GuardarRelacionCitaOrdenes(SqlConnection dbCnx, int aIdCita, int aIdOrden)
         {
             dbCnx.Open();
-
+            string retorno = string.Empty;
             SqlCommand cmd = new SqlCommand("select idTrabajo from talleres.dbo.Trabajo where idCita = " + aIdCita, dbCnx);
             DataTable dt = new DataTable();
             dt.Load(cmd.ExecuteReader());
+            LogWriter log = new LogWriter();
             if (dt.Rows.Count > 0)
             {
-
+                string query = "insert into RelacionCitaOrdenes(idCitaTalleres,idTrabajoTalleres,idOrdenesAseprot) values("+ aIdCita + ","+ int.Parse(dt.Rows[0]["idTrabajo"].ToString()) +","+ aIdOrden + ")";
+                //using (SqlConnection cn = new SqlConnection(con.ReturnStringConnection((Constants.conexiones)Constants.conexiones.ASEPROTPruebas)))
+                cmd = new SqlCommand(query, dbCnx);
+                
+                int res = cmd.ExecuteNonQuery();
+                if (res > 0)
+                    retorno = "Relación cita con orden generada.";
+                else
+                    throw new Exception("Ocurrio un error al insertar la el registro de relación");
             }
+            else
+            {
+                string query = "insert into RelacionCitaOrdenes(idCitaTalleres,idOrdenesAseprot) values(" + aIdCita + "," + aIdOrden + ")";
+                //using (SqlConnection cn = new SqlConnection(con.ReturnStringConnection((Constants.conexiones)Constants.conexiones.ASEPROTPruebas)))
+                cmd = new SqlCommand(query, dbCnx);
+                
+                int res = cmd.ExecuteNonQuery();
+                if (res > 0)
+                    retorno = "Relación cita con orden generada.";
+                else
+                    throw new Exception("Ocurrio un error al insertar la el registro de relación");
+            }
+            log.WriteInLog(retorno);
             dbCnx.Close();
-
+            return retorno;
         }
 
     }
