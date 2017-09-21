@@ -13,7 +13,7 @@ namespace ConexionDB
     {
         static void Main(string[] args)
         {
-            InsertOrdenesData();
+            //InsertOrdenesData();
             //SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
 
             //SqlCommand ordCMD = serConn.CreateCommand();
@@ -27,29 +27,29 @@ namespace ConexionDB
             //serConn.Close();
             //Console.ReadLine();
         }
-        public static void InsertOrdenesData() {
-            Ordenes ord = new Ordenes();
-            ord.fechaCreacionOden = DateTime.Now;
-            ord.fechaCita = ord.fechaCreacionOden.AddHours(2);
-            ord.numeroOrden = "01-1810057-582";
-            ord.consecutivoOrden = 582;
-            ord.comentarioOrden = "Prueba de migración";
-            ord.requiereGrua = false;
-            ord.idCatalogoEstadoUnidad = 1;
-            ord.idZona = 34;
-            ord.idUnidad = 1613;
-            ord.idContratoOperacion = 1;
-            ord.idUsuario = 510;
-            ord.idCatalogoTipoOrdenServicio = 2;
-            ord.idTipoOrden = 1;
-            ord.idEstatusOrden = 1;
-            ord.idCentroTrabajo = 20;
-            ord.idTaller = 160;
-            ord.idGarantia = 0;
-            ord.motivoGarantia = "";
+        //public static void InsertOrdenesData() {
+        //    Ordenes ord = new Ordenes();
+        //    ord.fechaCreacionOden = DateTime.Now;
+        //    ord.fechaCita = ord.fechaCreacionOden.AddHours(2);
+        //    ord.numeroOrden = "01-1810057-582";
+        //    ord.consecutivoOrden = 582;
+        //    ord.comentarioOrden = "Prueba de migración";
+        //    ord.requiereGrua = false;
+        //    ord.idCatalogoEstadoUnidad = 1;
+        //    ord.idZona = 34;
+        //    ord.idUnidad = 1613;
+        //    ord.idContratoOperacion = 1;
+        //    ord.idUsuario = 510;
+        //    ord.idCatalogoTipoOrdenServicio = 2;
+        //    ord.idTipoOrden = 1;
+        //    ord.idEstatusOrden = 1;
+        //    ord.idCentroTrabajo = 20;
+        //    ord.idTaller = 160;
+        //    ord.idGarantia = 0;
+        //    ord.motivoGarantia = "";
 
-            ord.InsertData(ord);
+        //    ord.InsertData(ord);
 
-        }
+        //}
     }
 }

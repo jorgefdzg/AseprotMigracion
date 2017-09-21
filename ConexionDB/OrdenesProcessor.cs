@@ -349,11 +349,11 @@ namespace ConexionDB
             }
         }
 
-        public static List<Historico> GetHistoricosOrden(SqlConnection dbCnx, int aIdCita,int aIdOrden)
+        public static List<HistoricoOrdenes> GetHistoricosOrden(SqlConnection dbCnx, int aIdCita,int aIdOrden)
         {
             dbCnx.Open();
             DataTable dt = new DataTable();
-            List<Historico> historicos = new List<Historico>();
+            List<HistoricoOrdenes> historicos = new List<HistoricoOrdenes>();
             List<int> estatus = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 13 };
             List<string> comandos = new List<string>
             {
@@ -378,7 +378,7 @@ namespace ConexionDB
                 dt.Load(cmd.ExecuteReader());
                 if (dt.Rows.Count > 0)
                 {
-                    Historico historico = new Historico
+                    HistoricoOrdenes historico = new HistoricoOrdenes
                     {
                         idOrden = aIdOrden,
                         fechaInicial = DateTime.Parse(dt.Rows[0]["fecha"].ToString()),
