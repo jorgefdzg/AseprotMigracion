@@ -58,8 +58,6 @@ namespace ConexionDB
             {
                 SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
 
-
-
                 serConn.Open();
                 SqlCommand cotCMD = new SqlCommand("select * from talleres.dbo.CotizacionMaestro", serConn);
                 DataTable dt = new DataTable();
@@ -70,11 +68,19 @@ namespace ConexionDB
                 foreach (DataRow dr in dt.Rows)
                 {
                     int idCotizacion = int.Parse(dr["idCotizacion"].ToString()); 
-                   Cotizaciones cotizacion = CotizacionesProcessor.GetCotizacion(serConn, idCotizacion);
-                    #region  insert de la cita
-                    
+                    Cotizaciones cotizacion = CotizacionesProcessor.GetCotizacion(serConn, idCotizacion);
+                    decimal newIdCotizacion = 0;
+                    #region  insert de la cotización
+                    Cotizaciones.InsertData(serConn, cotizacion, ref newIdCotizacion);
                     #endregion
-                   
+                    #region insert relación ids nuevos y viejos
+                    RelacionCotizacionTalleresASE newRelacionCotizaciones = new RelacionCotizacionTalleresASE();
+                    newRelacionCotizaciones.idCotizacionTalleres = idCotizacion;
+                    newRelacionCotizaciones.idCotizacionASE = newIdCotizacion;
+
+                    RelacionCotizacionTalleresASE.InsertData(serConn,newRelacionCotizaciones);
+                    #endregion
+
                 }
 
                 serConn.Close();

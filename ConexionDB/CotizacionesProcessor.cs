@@ -162,7 +162,7 @@ namespace ConexionDB
             SqlCommand cmd = new SqlCommand(@"select O.numeroOrden + '-' + CONVERT(varchar(3),"+consecutivo+") as numeroCotizacion " +
                                             @"from RelacionCitaOrdenes RCO
                                               inner join Talleres..CotizacionMaestro CM on CM.idTrabajo = RCO.idTrabajoTalleres
-                                              inner join Ordenes O on O.idOrden = RCO.idOrdenAseprot
+                                              inner join Ordenes O on O.idOrden = RCO.idOrdenesAseprot
                                               where CM.idCotizacion = " + aIdCotizacion, serConn);
 
             DataTable dt = new DataTable();
