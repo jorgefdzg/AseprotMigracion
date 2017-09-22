@@ -50,5 +50,25 @@ namespace ConexionDB
                 Console.WriteLine("Ocurrio un error : " + aE.Message + "\r\n");
             }
         }
+
+        public static void migracion8()
+        {
+            SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
+            SqlTransaction transaction = null;
+            Presupuesto p = new Presupuesto();
+            List<Presupuesto> presupuesto = p.listarPresupuesto(serConn);
+            foreach (Presupuesto presu in presupuesto)
+                p.InsertarPresupuesto(presu, serConn, transaction);
+
+            PresupuestoOrden presupuestoOrden = new PresupuestoOrden();
+            List<PresupuestoOrden> listPresupuestoOrden = presupuestoOrden.listarPresupuestoOrden(serConn);
+            foreach (PresupuestoOrden presupuestoOrdenI in listPresupuestoOrden)
+                presupuestoOrden.InsertarPresupuesto(presupuestoOrdenI, serConn, transaction);
+
+            TraspasoPresupuesto traspasoPresupuesto = new TraspasoPresupuesto();
+            List<TraspasoPresupuesto> traspasoList = traspasoPresupuesto.listarTraspasoPresupuesto(serConn);
+            foreach (TraspasoPresupuesto traspaso in traspasoList)
+                traspasoPresupuesto.InsertarTraspaso(traspaso, serConn, transaction);
+        }
     }
 }
