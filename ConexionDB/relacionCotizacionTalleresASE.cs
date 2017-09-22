@@ -34,9 +34,9 @@ namespace ConexionDB
                     else
                         cmd.Parameters.Add("@idCotizacionASE", SqlDbType.Decimal).Value = IdsCotizacion.idCotizacionASE;
 
-                    cn.Open();
+                    
                     int rowsAffected = cmd.ExecuteNonQuery();
-                    cn.Close();
+                    
 
                     if (rowsAffected > 0)                    
                         log.WriteInLog("Registro de relación cotización insertado con exito " + IdsCotizacion.idCotizacionTalleres);

@@ -59,10 +59,10 @@ namespace ConexionDB
                 SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
 
                 serConn.Open();
-                SqlCommand cotCMD = new SqlCommand("select * from talleres.dbo.CotizacionMaestro", serConn);
+                SqlCommand cotCMD = new SqlCommand("select * from talleres.dbo.CotizacionMaestro where idTrabajo in (select idTrabajoTalleres from ASEPROTDesarrollo..RelacionCitaOrdenes) and idCotizacion not in (4913)", serConn);
                 DataTable dt = new DataTable();
                 dt.Load(cotCMD.ExecuteReader());
-                serConn.Close();
+                
                 List<Cotizaciones> cotizacionX = new List<Cotizaciones>();
 
                 foreach (DataRow dr in dt.Rows)
@@ -70,6 +70,11 @@ namespace ConexionDB
                     int idCotizacion = int.Parse(dr["idCotizacion"].ToString()); 
                     Cotizaciones cotizacion = CotizacionesProcessor.GetCotizacion(serConn, idCotizacion);
                     decimal newIdCotizacion = 0;
+                    if (cotizacion.idOrden == 817)
+                    {
+                        newIdCotizacion = 0;
+                    }
+                    
                     #region  insert de la cotización
                     Cotizaciones.InsertData(serConn, cotizacion, ref newIdCotizacion);
                     #endregion
@@ -81,13 +86,17 @@ namespace ConexionDB
                     RelacionCotizacionTalleresASE.InsertData(serConn,newRelacionCotizaciones);
                     #endregion
 
+
                 }
 
                 serConn.Close();
             }
             catch (Exception aE)
             {
+                LogWriter log = new LogWriter();
                 Console.WriteLine("Ocurrio un error : " + aE.Message + "\r\n");
+                log.WriteInLog("Ocurrio la Excepcion: " + aE.Message);
+
             }
 
         }

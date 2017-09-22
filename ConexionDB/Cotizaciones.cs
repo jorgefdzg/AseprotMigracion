@@ -70,20 +70,20 @@ namespace ConexionDB
                     else
                         cmd.Parameters.Add("@idPreorden", SqlDbType.Decimal).Value = cotizacion.idPreorden;
 
-                    cn.Open();
+                    
                     int rowsAffected = cmd.ExecuteNonQuery();
-                    cn.Close();
+                    
                     if (rowsAffected > 0)
                     {
                         log.WriteInLog("Registro de cotización insertado con exito " + cotizacion.numeroCotizacion);
-                        cn.Open();
+                       
                         SqlCommand cmd2 = new SqlCommand("select top 1 idCotizacion from Cotizaciones order by idCotizacion desc", cn);
                         DataTable dt = new DataTable();
                         dt.Load(cmd2.ExecuteReader());
                         if (dt.Rows.Count > 0)
-                            IdCotizacionNueva = decimal.Parse(dt.Rows[0]["idOrden"].ToString());
+                            IdCotizacionNueva = decimal.Parse(dt.Rows[0]["idCotizacion"].ToString());
 
-                        cn.Close();
+                        
                     }
 
                 }
