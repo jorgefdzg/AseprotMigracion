@@ -27,20 +27,25 @@ namespace ConexionDB
         public int      idUsuario               { get { return _idUsuario; } set { _idUsuario = value; } }
 
 
-        public static string GuardarHistoricoOrdenes(SqlConnection serConn ,Ordenes orden)
+        public static string GuardarHistoricoOrdenes(SqlConnection serConn ,Ordenes orden,SqlTransaction aTrans)
         {
             string retorno = string.Empty;
-            serConn.Open();
-            orden.Historicos = orden.Historicos.OrderByDescending(o => o.idEstatusOrden).ToList();
-            for (int i = 0; i < orden.Historicos.Count; i++)
+            LogWriter log = new LogWriter();
+            //////serConn.Open();
+
+            //orden.Historicos = orden.Historicos.OrderByDescending(o => o.idEstatusOrden).ToList();
+            
+            int h = orden.Historicos.Count - 1;
+            while (h >= 0)            
             {
-                HistoricoOrdenes item = orden.Historicos[i];
+                HistoricoOrdenes item = orden.Historicos[h];
                 Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-                DateTime fechaFinal = i == 0 ? DateTime.MinValue : orden.Historicos[i - 1].fechaInicial;
+                DateTime fechaFinal = h == orden.Historicos.Count - 1 ? DateTime.MinValue : orden.Historicos[h + 1].fechaInicial;
                 if (fechaFinal != DateTime.MinValue)
-                    orden.Historicos[i].fechaFinal = fechaFinal;
+                    orden.Historicos[h].fechaFinal = fechaFinal;
+                h--;
             }
-            orden.Historicos = orden.Historicos.OrderBy(o => o.idEstatusOrden).ToList();
+            //orden.Historicos = orden.Historicos.OrderBy(o => o.idEstatusOrden).ToList();
             for (int i = 0; i < orden.Historicos.Count; i++)
             {
                 HistoricoOrdenes item = orden.Historicos[i];
@@ -51,9 +56,9 @@ namespace ConexionDB
                 DateTime fechaFinal = item.fechaFinal ?? DateTime.MinValue;
                 SqlCommand cmdH = new SqlCommand();
                 if (fechaFinal == DateTime.MinValue) 
-                    cmdH = new SqlCommand("insert into HistorialEstatusOrden (idOrden,idEstatusOrden,fechaInicial,idUsuario) values(" + item.idOrden + "," + item.idEstatusOrden + ",CAST('" + item.fechaInicial.ToString("yyyy-MM-ddThh:mm:ss") + "' AS DATETIME)," + item.idUsuario + ")",serConn);
+                    cmdH = new SqlCommand("insert into HistorialEstatusOrden (idOrden,idEstatusOrden,fechaInicial,idUsuario) values(" + item.idOrden + "," + item.idEstatusOrden + ",CAST('" + item.fechaInicial.ToString("yyyy-MM-ddThh:mm:ss") + "' AS DATETIME)," + item.idUsuario + ")",serConn, aTrans);
                 else
-                    cmdH = new SqlCommand("insert into HistorialEstatusOrden (idOrden,idEstatusOrden,fechaInicial,fechaFinal,idUsuario) values(" + item.idOrden + "," + item.idEstatusOrden + ",CAST('" + item.fechaInicial.ToString("yyyy-MM-ddThh:mm:ss") + "' AS DATETIME),CAST('" + fechaFinal.ToString("yyyy-MM-ddThh:mm:ss") + "'  AS DATETIME)," + item.idUsuario + ")",serConn);
+                    cmdH = new SqlCommand("insert into HistorialEstatusOrden (idOrden,idEstatusOrden,fechaInicial,fechaFinal,idUsuario) values(" + item.idOrden + "," + item.idEstatusOrden + ",CAST('" + item.fechaInicial.ToString("yyyy-MM-ddThh:mm:ss") + "' AS DATETIME),CAST('" + fechaFinal.ToString("yyyy-MM-ddThh:mm:ss") + "'  AS DATETIME)," + item.idUsuario + ")",serConn, aTrans);
                     
 
                 int res = cmdH.ExecuteNonQuery();
@@ -64,7 +69,8 @@ namespace ConexionDB
                 else
                     throw new Exception( "Ocurrio un error al generar el historio de estatus " + item.idEstatusOrden );
             }
-            serConn.Close();
+            //////serConn.Close();
+            log.WriteInLog(retorno);
             return retorno;
         }
 
