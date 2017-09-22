@@ -32,7 +32,7 @@ namespace ConexionDB
                     #endregion
                     #region  insert  de historicos
                     orden.Historicos = OrdenesProcessor.GetHistoricosOrden(serConn, idCita,idOrden);
-                    Console.WriteLine(Historico.GuardarHistoricoOrdenes(serConn, orden));
+                    Console.WriteLine(HistoricoOrdenes.GuardarHistoricoOrdenes(serConn, orden));
                     #endregion
                     #region insert de la tabla relacion
                     Console.WriteLine(OrdenesProcessor.GuardarRelacionCitaOrdenes(serConn,idCita, idOrden));
