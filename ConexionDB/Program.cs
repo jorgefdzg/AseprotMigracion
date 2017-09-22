@@ -13,6 +13,7 @@ namespace ConexionDB
     {
         static void Main(string[] args)
         {
+            GeneralProcessor.MigracionCotizacion();
             //InsertOrdenesData();
             //SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
 
@@ -26,7 +27,8 @@ namespace ConexionDB
             //}
             //serConn.Close();
             //Console.ReadLine();
-        }
+
+          }
         //public static void InsertOrdenesData() {
         //    Ordenes ord = new Ordenes();
         //    ord.fechaCreacionOden = DateTime.Now;

@@ -66,13 +66,15 @@ namespace ConexionDB
                 dt.Load(cotCMD.ExecuteReader());
                 serConn.Close();
                 List<Cotizaciones> cotizacionX = new List<Cotizaciones>();
+
                 foreach (DataRow dr in dt.Rows)
                 {
-                    int idCotizacion = int.Parse(dr["idCotizacion"].ToString());
-                    Cotizaciones cotizacion = CotizacionesProcessor.GetCotizacion(serConn, idCotizacion);
+                    int idCotizacion = int.Parse(dr["idCotizacion"].ToString()); 
+                   Cotizaciones cotizacion = CotizacionesProcessor.GetCotizacion(serConn, idCotizacion);
                     #region  insert de la cita
-                    //TODO
+                    
                     #endregion
+                   
                 }
 
                 serConn.Close();

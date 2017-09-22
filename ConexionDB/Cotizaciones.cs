@@ -21,7 +21,10 @@ namespace ConexionDB
         public int idCatalogoTipoOrdenServicio { get; set; }
         public decimal? idPreorden { get; set; }
 
-        public void InsertData(SqlConnection cn, Cotizaciones cotizacion)
+
+
+
+        public static void InsertData(SqlConnection cn, Cotizaciones cotizacion)
         {
             LogWriter log = new LogWriter();
             try
