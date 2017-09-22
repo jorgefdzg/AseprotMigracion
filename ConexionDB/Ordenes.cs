@@ -35,7 +35,7 @@ namespace ConexionDB
 
 
 
-        public static int InsertData(SqlConnection cn, Ordenes orden) {
+        public static int InsertData(SqlConnection cn, Ordenes orden, SqlTransaction aTrans) {
             LogWriter log = new LogWriter();
             try
             {
@@ -45,7 +45,7 @@ namespace ConexionDB
                 ConexionsDBs con = new ConexionsDBs();
                 //SqlConnection cn = new SqlConnection(con.ReturnStringConnection((Constants.conexiones)Constants.conexiones.ASEPROTDesarrollo));
                 //using (cn)
-                using (SqlCommand cmd = new SqlCommand(query, cn))
+                using (SqlCommand cmd = new SqlCommand(query, cn, aTrans))
                 {
                     if (string.IsNullOrEmpty(orden.fechaCreacionOden.ToString()))
                         cmd.Parameters.Add("@fechaCreacionOden", SqlDbType.DateTime).Value = DBNull.Value;
@@ -136,24 +136,24 @@ namespace ConexionDB
                     else
                         cmd.Parameters.Add("@motivoGarantia", SqlDbType.VarChar, 100).Value = orden.motivoGarantia;
 
-                    cn.Open();
+                    //////cn.Open();
                     rowsAffected = cmd.ExecuteNonQuery();
                     
-                    cn.Close();
+                    //////cn.Close();
                     if (rowsAffected > 0)
                         log.WriteInLog("Registro de Orden insertado con exito " + orden.numeroOrden);
                 }
                 if (rowsAffected > 0)
                 {
-                    cn.Open();
-                    SqlCommand cmd2 = new SqlCommand("select top 1 idOrden from Ordenes order by idOrden desc", cn);
+                    //////cn.Open();
+                    SqlCommand cmd2 = new SqlCommand("select top 1 idOrden from Ordenes order by idOrden desc", cn, aTrans);
                     DataTable dt = new DataTable();
                     dt.Load(cmd2.ExecuteReader());
                     if (dt.Rows.Count > 0)
                         retorno = int.Parse(dt.Rows[0]["idOrden"].ToString());
                 }
                 
-                cn.Close();
+                //////cn.Close();
                 return retorno;
 
             }
