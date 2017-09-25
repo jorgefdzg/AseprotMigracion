@@ -42,20 +42,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CentroTrabajos.cs" />
     <Compile Include="ConexionsDBs.cs" />
+    <Compile Include="ConsecutivoZona.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="CotizacionDetalle.cs" />
     <Compile Include="Cotizaciones.cs" />
     <Compile Include="CotizacionesProcessor.cs" />
     <Compile Include="GeneralProcessor.cs" />
-    <Compile Include="Historico.cs" />
+    <Compile Include="HistoricoOrdenes.cs" />
     <Compile Include="LogWriter.cs" />
     <Compile Include="Ordenes.cs" />
     <Compile Include="OrdenesProcessor.cs" />
+    <Compile Include="Osur.cs" />
     <Compile Include="Partidas.cs" />
+    <Compile Include="Presupuesto.cs" />
+    <Compile Include="PresupuestoOrden.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RelacionCitaOrdenes.cs" />
+    <Compile Include="RelacionOsurPresupuesto.cs" />
+    <Compile Include="Tar.cs" />
+    <Compile Include="TraspasoPresupuesto.cs" />
+    <Compile Include="Unidades.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -24,21 +24,21 @@ namespace ConexionDB
                 dt.Load(ordCMD.ExecuteReader());
                 //serConn.Close();
                 List<Ordenes> ordenesXCitas = new List<Ordenes>();
-                int contador = dt.Rows.Count;    
+                int contador = dt.Rows.Count;
                 foreach (DataRow dr in dt.Rows)
                 {
                     int idCita = int.Parse(dr["idCita"].ToString());
-                    Ordenes orden = OrdenesProcessor.CrearOrdenXCita(serConn, idCita,trans);
+                    Ordenes orden = OrdenesProcessor.CrearOrdenXCita(serConn, idCita, trans);
                     #region  insert de la orden                    
-                    int idOrden = Ordenes.InsertData(serConn,orden,trans);
+                    int idOrden = Ordenes.InsertData(serConn, orden, trans);
                     #endregion
                     #region  insert  de historicos
 
-                    orden.Historicos = OrdenesProcessor.GetHistoricosOrden(serConn, idCita,idOrden,orden.idEstatusOrden,trans);
-                    Console.WriteLine(HistoricoOrdenes.GuardarHistoricoOrdenes(serConn, orden,trans));
+                    orden.Historicos = OrdenesProcessor.GetHistoricosOrden(serConn, idCita, idOrden, orden.idEstatusOrden, trans);
+                    Console.WriteLine(HistoricoOrdenes.GuardarHistoricoOrdenes(serConn, orden, trans));
                     #endregion
                     #region insert de la tabla relacion
-                    Console.WriteLine(OrdenesProcessor.GuardarRelacionCitaOrdenes(serConn,idCita, idOrden,trans));
+                    Console.WriteLine(OrdenesProcessor.GuardarRelacionCitaOrdenes(serConn, idCita, idOrden, trans));
                     #endregion
                     #region guardar cotizacion detalle por cita
                     //Console.WriteLine(CotizacionDetalle.GuardarCotizacionDetallePorCita(serConn, idCita));
@@ -58,6 +58,7 @@ namespace ConexionDB
                 serConn.Close();
             }
         }
+
 
         public static void MigracionCotizacion()
         {
@@ -88,7 +89,27 @@ namespace ConexionDB
             {
                 Console.WriteLine("Ocurrio un error : " + aE.Message + "\r\n");
             }
+        }
+        public static void migracion8()
+        {
+            SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
+            SqlTransaction transaction = null;
+            Presupuesto p = new Presupuesto();
+            List<Presupuesto> presupuesto = p.listarPresupuesto(serConn);
+            foreach (Presupuesto presu in presupuesto)
+                p.InsertarPresupuesto(presu, serConn, transaction);
+
+            PresupuestoOrden presupuestoOrden = new PresupuestoOrden();
+            List<PresupuestoOrden> listPresupuestoOrden = presupuestoOrden.listarPresupuestoOrden(serConn);
+            foreach (PresupuestoOrden presupuestoOrdenI in listPresupuestoOrden)
+                presupuestoOrden.InsertarPresupuesto(presupuestoOrdenI, serConn, transaction);
+
+            TraspasoPresupuesto traspasoPresupuesto = new TraspasoPresupuesto();
+            List<TraspasoPresupuesto> traspasoList = traspasoPresupuesto.listarTraspasoPresupuesto(serConn);
+            foreach (TraspasoPresupuesto traspaso in traspasoList)
+                traspasoPresupuesto.InsertarTraspaso(traspaso, serConn, transaction);
 
         }
+
     }
 }

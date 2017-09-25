@@ -31,8 +31,46 @@ namespace ConexionDB
         public decimal idGarantia { get; set; }
         public string motivoGarantia { get; set; }
         public List<HistoricoOrdenes> Historicos { get; set; }
- 
 
+        public static List<Ordenes> listarOrdenes(SqlConnection serConn)
+        {
+            List<Ordenes> ordenesList = new List<Ordenes>();
+            if (serConn == null)
+                return ordenesList;
+
+            Console.WriteLine("Consulta * from Ordenes");
+            SqlCommand consecZonaCMD = new SqlCommand("select * from Ordenes", serConn);
+            DataTable dt = new DataTable();
+            dt.Load(consecZonaCMD.ExecuteReader());
+            foreach (DataRow dr in dt.Rows)
+            {
+                Ordenes ordenes = new Ordenes();
+                ordenes.idOrden = decimal.Parse(dr["idOrden"].ToString());
+                //ordenes.fechaCreacionOden = DateTime.Parse(dr["fechaCreacionOden"].ToString());
+                //ordenes.fechaCita = DateTime.Parse(dr["fechaCita"].ToString());
+                //ordenes.fechaInicioTrabajo = dr["fechaInicioTrabajo"].ToString() != string.Empty ? DateTime.Parse(dr["fechaInicioTrabajo"].ToString()) : DateTime.Now;//aqyui preg
+                //ordenes.numeroOrden = dr["numeroOrden"].ToString();
+                //ordenes.consecutivoOrden = int.Parse(dr["consecutivoOrden"].ToString());
+                //ordenes.comentarioOrden = dr["comentarioOrden"].ToString();
+                //ordenes.requiereGrua = bool.Parse(dr["requiereGrua"].ToString());
+                //ordenes.idCatalogoEstadoUnidad = int.Parse(dr["idCatalogoEstadoUnidad"].ToString());
+                //ordenes.idZona = dr["idZona"].ToString() != string.Empty ? decimal.Parse(dr["idZona"].ToString()) : 0;
+                ordenes.idUnidad = decimal.Parse(dr["idUnidad"].ToString());
+                //ordenes.idContratoOperacion = int.Parse(dr["idContratoOperacion"].ToString());
+                //ordenes.idUsuario = decimal.Parse(dr["idUsuario"].ToString());
+                //ordenes.idCatalogoTipoOrdenServicio = int.Parse(dr["idCatalogoTipoOrdenServicio"].ToString());
+                //ordenes.idTipoOrden = int.Parse(dr["idTipoOrden"].ToString());
+                //ordenes.idEstatusOrden = int.Parse(dr["idEstatusOrden"].ToString());
+                //ordenes.idCentroTrabajo = decimal.Parse(dr["idCentroTrabajo"].ToString());
+                //ordenes.idTaller = decimal.Parse(dr["idTaller"].ToString());
+                //ordenes.idGarantia = decimal.Parse(dr["idGarantia"].ToString());
+                //ordenes.motivoGarantia = dr["motivoGarantia"].ToString();
+                ordenesList.Add(ordenes);
+                Console.WriteLine("Orden agregada a lista " + ordenes);
+            }
+
+            return ordenesList;
+        }
 
 
         public static int InsertData(SqlConnection cn, Ordenes orden, SqlTransaction aTrans) {
