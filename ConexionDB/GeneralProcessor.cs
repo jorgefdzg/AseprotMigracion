@@ -59,7 +59,7 @@ namespace ConexionDB
                 SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
 
                 serConn.Open();
-                SqlCommand cotCMD = new SqlCommand("select * from talleres.dbo.CotizacionMaestro where idTrabajo in (select idTrabajoTalleres from ASEPROTDesarrollo..RelacionCitaOrdenes) and idCotizacion not in (4913)", serConn);
+                SqlCommand cotCMD = new SqlCommand("select * from talleres.dbo.CotizacionMaestro where idTrabajo in (select idTrabajoTalleres from ASEPROTDesarrollo..RelacionCitaOrdenes)", serConn);
                 DataTable dt = new DataTable();
                 dt.Load(cotCMD.ExecuteReader());
                 
