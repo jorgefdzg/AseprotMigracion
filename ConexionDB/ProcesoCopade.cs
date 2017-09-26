@@ -13,7 +13,7 @@ namespace ConexionDB
         {
             try
             {
-                SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
+                SqlConnection serConn = new SqlConnection(Constants.ASEPROTFastStringConn);
                 serConn.Open();
                 SqlCommand cmd = new SqlCommand(@"USE [ASEPROTDesarrollo]
                                         GO

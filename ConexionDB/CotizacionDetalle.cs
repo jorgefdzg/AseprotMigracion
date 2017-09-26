@@ -16,7 +16,7 @@ namespace ConexionDB
                       case when det.idEstatus = 8 then 1 when det.idEstatus = 25 then 1 when det.idEstatus = 9 then 2 when det.idEstatus = 10 then 4 end as Estatus 
                       from [talleres].[dbo].[CotizacionDetalle] det
                       inner join talleres.dbo.ItemPrecioCliente pVta on pVta.idItemCliente = det.idElemento
-                      inner join ASEPROTDesarrollo.dbo.CotizacionTalleresASE relCot on relCot.idCotizacionTalleres = det.idCotizacion
+                      inner join ASEPROT.dbo.CotizacionTalleresASE relCot on relCot.idCotizacionTalleres = det.idCotizacion
                       inner join talleres.dbo.item itm on itm.idItem = det.idElemento
                       inner join Partidas.dbo.Partida par on par.partida = itm.numeroPartida
                       where det.idCotizacion = " + aIdCita , serConn);
@@ -28,7 +28,7 @@ namespace ConexionDB
                 ConexionsDBs con = new ConexionsDBs();
                 LogWriter log = new LogWriter();
                 string query = "insert into CotizacionDetalle(idCotizacion,costo,cantidad,venta,idPartida,idEstatusPartida) values(@idCotizacionASE,@Costo,@cantidad,@precioCliente,@idPartida,@Estatus)";
-                using (SqlConnection cn = new SqlConnection(con.ReturnStringConnection((Constants.conexiones)Constants.conexiones.ASEPROTPruebas)))
+                using (SqlConnection cn = new SqlConnection(Constants.ASEPROTFastStringConn))
                 using (SqlCommand cmd = new SqlCommand(query, cn))
                 {
                     if (string.IsNullOrEmpty(dtCotDet.Rows[0]["idCotizacionASE"].ToString()))
@@ -87,10 +87,10 @@ namespace ConexionDB
                       case when det.idEstatus = 8 then 1 when det.idEstatus = 25 then 1 when det.idEstatus = 9 then 2 when det.idEstatus = 10 then 4 end as Estatus 
                       from [talleres].[dbo].[CotizacionDetalle] det
                       inner join talleres.dbo.ItemPrecioCliente pVta on pVta.idItemCliente = det.idElemento
-                      inner join ASEPROTDesarrollo.dbo.CotizacionTalleresASE relCot on relCot.idCotizacionTalleres = det.idCotizacion					  
-					  inner join ASEPROTDesarrollo.dbo.Cotizaciones coti on coti.idCotizacion = relCot.idCotizacionASE
-					  inner join ASEPROTDesarrollo.dbo.Ordenes ord on ord.idOrden = coti.idOrden
-					  inner join ASEPROTDesarrollo.dbo.Unidades uni on uni.idUnidad = ord.idUnidad
+                      inner join ASEPROT.dbo.CotizacionTalleresASE relCot on relCot.idCotizacionTalleres = det.idCotizacion					  
+					  inner join ASEPROT.dbo.Cotizaciones coti on coti.idCotizacion = relCot.idCotizacionASE
+					  inner join ASEPROT.dbo.Ordenes ord on ord.idOrden = coti.idOrden
+					  inner join ASEPROT.dbo.Unidades uni on uni.idUnidad = ord.idUnidad
                       inner join talleres.dbo.item itm on itm.idItem = det.idElemento
                       inner join Partidas.dbo.Partida par on par.partida = itm.numeroPartida and par.idUnidad = uni.idTipoUnidad", serConn);
             int res = cmd.ExecuteNonQuery();

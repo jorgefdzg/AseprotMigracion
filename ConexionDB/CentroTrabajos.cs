@@ -22,7 +22,7 @@ namespace ConexionDB
                 return centroTrabajosList;
 
             Console.WriteLine("Consulta * from CentroTrabajos");
-            SqlCommand ctCMD = new SqlCommand("select  * from ASEPROTDesarrollo.dbo.CentroTrabajos", serConn);
+            SqlCommand ctCMD = new SqlCommand("select  * from ASEPROT.dbo.CentroTrabajos", serConn);
             DataTable dt = new DataTable();
             dt.Load(ctCMD.ExecuteReader());
             foreach (DataRow dr in dt.Rows)

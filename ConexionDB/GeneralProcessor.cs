@@ -12,13 +12,13 @@ namespace ConexionDB
     {
         public static void MigracionGeneral()
         {
-            SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
+            SqlConnection serConn = new SqlConnection(Constants.ASEPROTFastStringConn);
             serConn.Open();
             SqlTransaction trans = serConn.BeginTransaction("General");
             try
             {
 
-                SqlCommand ordCMD = new SqlCommand("select * from talleres.dbo.Cita", serConn, trans);
+                SqlCommand ordCMD = new SqlCommand("select top 5000 * from talleres.dbo.Cita order by idCita desc", serConn, trans);
 
                 DataTable dt = new DataTable();
                 dt.Load(ordCMD.ExecuteReader());
@@ -66,10 +66,10 @@ namespace ConexionDB
         {
             try
             {
-                SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
+                SqlConnection serConn = new SqlConnection(Constants.ASEPROTFastStringConn);
 
                 serConn.Open();
-                SqlCommand cotCMD = new SqlCommand("select * from talleres.dbo.CotizacionMaestro where idTrabajo in (select idTrabajoTalleres from ASEPROTDesarrollo..RelacionCitaOrdenes)", serConn);
+                SqlCommand cotCMD = new SqlCommand("select * from talleres.dbo.CotizacionMaestro where idTrabajo in (select idTrabajoTalleres from ASEPROT..RelacionCitaOrdenes)", serConn);
                 DataTable dt = new DataTable();
                 dt.Load(cotCMD.ExecuteReader());
                 
@@ -113,7 +113,7 @@ namespace ConexionDB
         {
             try
             {
-                SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
+                SqlConnection serConn = new SqlConnection(Constants.ASEPROTFastStringConn);
                 SqlTransaction transaction = null;
                 Presupuesto p = new Presupuesto();
                 List<Presupuesto> presupuesto = p.listarPresupuesto(serConn);

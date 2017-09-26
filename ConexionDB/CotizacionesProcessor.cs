@@ -15,7 +15,10 @@ namespace ConexionDB
             Cotizaciones CotizacionNueva = new Cotizaciones();
 
             CotizacionNueva.fechaCotizacion = GetFecha(aIdCotizacion);
-            CotizacionNueva.idTaller = GetIdTaller(aIdCotizacion);
+            if (HasTaller(aIdCotizacion) == true)
+                CotizacionNueva.idTaller = GetIdTaller(aIdCotizacion);
+            else
+                CotizacionNueva.idTaller = GetIdTallerByRazon(aIdCotizacion);
             CotizacionNueva.idUsuario = 514;
             CotizacionNueva.idEstatusCotizacion = GetEstatusCotizacion(aIdCotizacion);
             CotizacionNueva.idOrden = GetIdOrden(aIdCotizacion);
@@ -42,10 +45,43 @@ namespace ConexionDB
             if (dt.Rows.Count > 0)
                 date = DateTime.Parse(dt.Rows[0]["fechaCotizacion"].ToString());
 
-           serConn.Close();
+            serConn.Close();
             return date;
 
         }
+
+        private static bool HasTaller(long aIdCotizacion)
+        {
+            SqlConnection serConn = new SqlConnection(Constants.TalleresStringConn);
+
+            serConn.Open();
+
+            SqlCommand cmd = new SqlCommand(@"select count(*) as cuantos
+                                                from Taller T
+                                                inner join Partidas..Proveedor P on P.razonSocial = T.razonSocial and P.direccion = T.direccion
+                                                inner join Partidas..ContratoProveedor CP on CP.idProveedor = P.idProveedor and idContrato = 4
+                                                where idTaller = (select isnull(CM.idTaller, C.idTaller)
+                                                                    from CotizacionMaestro CM
+                                                                    inner join Trabajo T on T.idTrabajo = CM.idTrabajo
+                                                                    inner join Cita C on C.idCita = T.idCita
+                                                                    where idCotizacion = " + aIdCotizacion + ")", serConn);
+
+            DataTable dt = new DataTable();
+            dt.Load(cmd.ExecuteReader());
+
+            int talleres = 0;
+
+            if (dt.Rows.Count > 0)
+                talleres = int.Parse(dt.Rows[0]["cuantos"].ToString());
+
+            serConn.Close();
+
+            if (talleres == 0)
+                return false;
+            else
+                return true;
+        }
+
 
         private static decimal GetIdTaller(long aIdCotizacion)
         {
@@ -53,29 +89,51 @@ namespace ConexionDB
 
             serConn.Open();
 
-            SqlCommand cmd = new SqlCommand(@"select isnull(P.idProveedor, (select TOP 1 Ptemp.idProveedor from Partidas..Proveedor Ptemp where Ptemp.razonSocial = T.razonSocial)) as idTaller 
+            SqlCommand cmd = new SqlCommand(@"select TOP 1 P.idProveedor
                                                 from Taller T
-                                                left join Partidas..Proveedor P on T.razonSocial = P.razonSocial and T.direccion = P.direccion
-                                                inner join Partidas..ContratoProveedor CP on CP.idProveedor = P.idProveedor and CP.idContrato = 4
+                                                inner join Partidas..Proveedor P on P.razonSocial = T.razonSocial and P.direccion = T.direccion
+                                                inner join Partidas..ContratoProveedor CP on CP.idProveedor = P.idProveedor and idContrato = 4
                                                 where idTaller = (select isnull(CM.idTaller, C.idTaller)
                                                                     from CotizacionMaestro CM
-                                                                    inner
-                                                                    join Trabajo T on T.idTrabajo = CM.idTrabajo
-                                                              inner
-                                                                    join Cita C on C.idCita = T.idCita
-                                                                    where idCotizacion = " + aIdCotizacion + ") ", serConn);
+                                                                    inner join Trabajo T on T.idTrabajo = CM.idTrabajo
+					                                                inner join Cita C on C.idCita = T.idCita
+                                                                    where idCotizacion = " + aIdCotizacion + ")", serConn);
             DataTable dt = new DataTable();
             dt.Load(cmd.ExecuteReader());
             decimal idTaller = 0;
-            
+
             if (dt.Rows.Count > 0)
                 idTaller = decimal.Parse(dt.Rows[0]["idTaller"].ToString());
             // errores generados por IdCentroTrabajo
-            serConn.Close(); 
+            serConn.Close();
             return idTaller;
         }
 
-      
+        private static decimal GetIdTallerByRazon(long aIdCotizacion)
+        {
+            SqlConnection serConn = new SqlConnection(Constants.TalleresStringConn);
+
+            serConn.Open();
+
+            SqlCommand cmd = new SqlCommand(@"select TOP 1 P.idProveedor 
+                                                from Taller T
+                                                inner join Partidas..Proveedor P on P.razonSocial = T.razonSocial
+                                                inner join Partidas..ContratoProveedor CP on P.idProveedor = CP.idProveedor and CP.idContrato = 4
+                                                where idTaller = (select isnull(CM.idTaller, C.idTaller)
+                                                                    from CotizacionMaestro CM
+                                                                    inner join Trabajo T on T.idTrabajo = CM.idTrabajo
+					                                                inner join Cita C on C.idCita = T.idCita
+                                                                    where idCotizacion = " + aIdCotizacion + ")", serConn);
+            DataTable dt = new DataTable();
+            dt.Load(cmd.ExecuteReader());
+            decimal idTaller = 0;
+
+            if (dt.Rows.Count > 0)
+                idTaller = decimal.Parse(dt.Rows[0]["idTaller"].ToString());
+            // errores generados por IdCentroTrabajo
+            serConn.Close();
+            return idTaller;
+        }
 
         private static int GetEstatusCotizacion(long aIdCotizacion)
         {
@@ -159,7 +217,7 @@ namespace ConexionDB
 
             serConn.Open();
 
-            SqlCommand cmd = new SqlCommand(@"select O.numeroOrden + '-' + CONVERT(varchar(3),"+consecutivo+") as numeroCotizacion " +
+            SqlCommand cmd = new SqlCommand(@"select O.numeroOrden + '-' + CONVERT(varchar(3)," + consecutivo + ") as numeroCotizacion " +
                                             @"from RelacionCitaOrdenes RCO
                                               inner join Talleres..CotizacionMaestro CM on CM.idTrabajo = RCO.idTrabajoTalleres
                                               inner join Ordenes O on O.idOrden = RCO.idOrdenesAseprot

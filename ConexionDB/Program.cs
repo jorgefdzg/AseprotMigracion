@@ -15,7 +15,7 @@ namespace ConexionDB
         {
             GeneralProcessor.MigracionGeneral();
             GeneralProcessor.MigracionCotizacion();
-            SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
+            SqlConnection serConn = new SqlConnection(Constants.ASEPROTFastStringConn);
             CotizacionDetalle.GuardarCotizacionDetalleCompleto(serConn);
             GeneralProcessor.migracion8();
             //ProcesoAutorizacion.GenerarAutorizacion();

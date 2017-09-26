@@ -11,9 +11,10 @@ namespace ConexionDB
         public const int IdContratoOperacionMigracion = 3;
         public const string ASEPROTDesarrolloStringConn = "Server = 192.168.20.9; Database = ASEPROTDesarrollo; User Id = sa; Password = S0p0rt3;";
         public const string ASEPROTStringConn = "Server = 192.168.20.18; Database = ASEPROT; User Id = sa; Password = S0p0rt3;";
+        public const string ASEPROTFastStringConn = "Server = 192.168.20.31; Database = ASEPROT; User Id = sa; Password = S0p0rt3;";
         public const string ASEPROTPruebasStringConn = "Server = 192.168.20.18; Database = ASEPROTPruebas; User Id = sa; Password = S0p0rt3;";
-        public const string PartidasStringConn = "Server = 192.168.20.9; Database = Partidas; User Id = sa; Password = S0p0rt3;";
-        public const string TalleresStringConn = "Server = 192.168.20.9; Database = talleres; User Id = sa; Password = S0p0rt3;";
+        public const string PartidasStringConn = "Server = 192.168.20.31; Database = Partidas; User Id = sa; Password = S0p0rt3;";
+        public const string TalleresStringConn = "Server = 192.168.20.31; Database = talleres; User Id = sa; Password = S0p0rt3;";
         //public static readonly string[] conexiones = { "ASEPROTDesarrollo", "ASEPROT", "ASEPROTPruebas", "Partidas", "Talleres" };
         public enum conexiones { ASEPROTDesarrollo = 1, ASEPROT, ASEPROTPruebas, Partidas, Talleres};
 

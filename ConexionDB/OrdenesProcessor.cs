@@ -221,7 +221,7 @@ namespace ConexionDB
             {
                 //////dbCnx.Open();
 
-                SqlCommand cmd = new SqlCommand(@"select ndbUni.idUnidad from ASEPROTDesarrollo.dbo.Unidades ndbUni
+                SqlCommand cmd = new SqlCommand(@"select ndbUni.idUnidad from ASEPROT.dbo.Unidades ndbUni
                                     left join talleres.dbo.Unidad uni on uni.numEconomico = ndbUni.numeroEconomico
                                     left join talleres.dbo.Cita cita on cita.idUnidad = uni.idUnidad
                                     where idOperacion = 3 and cita.idCita = " + aIdCita + "", dbCnx, aTrans);
@@ -395,7 +395,7 @@ namespace ConexionDB
                         idEstatusOrden = estatus[i],
                         idUsuario = 514
                     };
-                    if(estatusOrden >= estatus[i])  //descomentar si se requiere que los estatus de talleres no sobrepasen el estatus de la orden
+                    if(estatusOrden >= estatus[i] || (estatusOrden > 8 && estatus[i] == 14))  //descomentar si se requiere que los estatus de talleres no sobrepasen el estatus de la orden
                         historicos.Add(historico);
                 }else if(estatusOrden >= estatus[i])
                 {
@@ -437,7 +437,7 @@ namespace ConexionDB
                         case 12:
                             bool existe = historicos.Where(o => o.idEstatusOrden == 14).ToList().Count > 0;
                             if (estatus[i] == 13 ) break;
-                            if (estatusOrden < estatus[i] ) break;
+                            if (estatusOrden < estatus[i] && estatus[i] != 14) break;
                             HistoricoOrdenes historico3 = new HistoricoOrdenes
                             {
                                 idOrden = aIdOrden,

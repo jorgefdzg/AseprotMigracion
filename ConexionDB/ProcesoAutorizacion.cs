@@ -14,7 +14,7 @@ namespace ConexionDB
             try
             {
                 LogWriter log = new LogWriter();
-                SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
+                SqlConnection serConn = new SqlConnection(Constants.ASEPROTFastStringConn);
                 serConn.Open();
                 #region Notas
                 SqlCommand cmd = new SqlCommand(@"use ASEPROTDesarrollo                                     
