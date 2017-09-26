@@ -74,7 +74,7 @@ namespace ConexionDB
                 dt.Load(cotCMD.ExecuteReader());
                 
                 List<Cotizaciones> cotizacionX = new List<Cotizaciones>();
-
+                int contador = dt.Rows.Count;
                 foreach (DataRow dr in dt.Rows)
                 {
                     int idCotizacion = int.Parse(dr["idCotizacion"].ToString()); 
@@ -96,7 +96,8 @@ namespace ConexionDB
                     RelacionCotizacionTalleresASE.InsertData(serConn,newRelacionCotizaciones);
                     #endregion
 
-
+                    Console.WriteLine("Cotizaciones restantes : " + contador);
+                    contador--;
                 }
 
                 serConn.Close();

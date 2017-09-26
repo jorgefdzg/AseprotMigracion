@@ -139,7 +139,7 @@ namespace ConexionDB
                             cmd3.Transaction = transaction;
                             int res = cmd3.ExecuteNonQuery();
                             if (res > 0)
-                                log.WriteInLog("Registro de relacionOsurPresupuesto insertado con exito id : " + idNuevoPresupuesto);
+                                log.WriteInLog("Registro de relacionOsurPresupuesto insertado con exito id : " + idNuevoPresupuesto + "\r\n");
                             else
                                 throw new Exception("Ocurrio un error al insertar la el registro de relacionOsurPresupuesto");
                         }
