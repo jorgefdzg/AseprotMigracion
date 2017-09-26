@@ -17,8 +17,7 @@ namespace ConexionDB
                 SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
                 serConn.Open();
                 #region Notas
-                SqlCommand cmd = new SqlCommand(@"use ASEPROTDesarrollo 
-                                    GO
+                SqlCommand cmd = new SqlCommand(@"use ASEPROTDesarrollo                                     
                                     BEGIN TRAN nota
                                     BEGIN TRY
                                     insert into notas (descripcionNota,idOrden,idUsuario,fechaNota,idEstatusOrden)
@@ -42,7 +41,6 @@ namespace ConexionDB
                 serConn.Open();
                 #region Aprovaciones
                 cmd = new SqlCommand(@"use ASEPROTDesarrollo
-                                        GO
 
                                         BEGIN TRAN aproPro
                                         BEGIN TRY
@@ -118,7 +116,7 @@ namespace ConexionDB
                                         ROLLBACK TRAN aproUtil
                                         END CATCH
 
-                                        GO ", serConn);
+                                         ", serConn);
                 res = cmd.ExecuteNonQuery();
                 response = string.Empty;
                 if (res > 0)
@@ -130,7 +128,7 @@ namespace ConexionDB
                 serConn.Open();
                 #region Aprovacion respuesta
                 cmd = new SqlCommand(@"use ASEPROTDesarrollo
-                                GO
+                                
 
                                 SET ANSI_NULLS ON
                                 GO
@@ -227,8 +225,7 @@ namespace ConexionDB
                 serConn.Close();
                 serConn.Open();
                 #region Facturacion Cotizacion
-                cmd = new SqlCommand(@"use ASEPROTDesarrollo
-                                GO
+                cmd = new SqlCommand(@"use ASEPROTDesarrollo                                
                                 BEGIN TRAN facCot
                                 BEGIN TRY
                                 insert into facturaCotizacion (idCotizacion,numFactura,uuid,fechaFactura,subTotal,iva,total,fechaAlta,idUsuario,xml,rfcEmisor)
@@ -238,8 +235,7 @@ namespace ConexionDB
                                 END TRY
                                 BEGIN CATCH
                                 ROLLBACK TRAN facCot
-                                END CATCH
-                                GO", serConn);
+                                END CATCH", serConn);
                 res = cmd.ExecuteNonQuery();
                 response = string.Empty;
                 if (res > 0)
@@ -250,9 +246,7 @@ namespace ConexionDB
                 serConn.Close();
                 serConn.Open();
                 #region Historico autorizaciones
-                cmd = new SqlCommand(@"use ASEPROTDesarrollo
-                                GO
-
+                cmd = new SqlCommand(@"use ASEPROTDesarrollo                               
                                 BEGIN TRAN histCotT
                                 BEGIN TRY
 
@@ -331,9 +325,7 @@ namespace ConexionDB
                 serConn.Close();
                 serConn.Open();
                 #region Migracion de datos en AutorizacionCotizacion 
-                cmd = new SqlCommand(@"use ASEPROTDesarrollo
-                            GO
-
+                cmd = new SqlCommand(@"use ASEPROTDesarrollo                            
                             BEGIN TRAN autCot
                             BEGIN TRY
 
@@ -367,8 +359,7 @@ namespace ConexionDB
                             BEGIN CATCH
 
                             ROLLBACK TRAN detAutCot
-                            END CATCH
-                            ", serConn);
+                            END CATCH", serConn);
                 res = cmd.ExecuteNonQuery();
                 response = string.Empty;
                 if (res > 0)

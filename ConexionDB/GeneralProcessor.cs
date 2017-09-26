@@ -18,7 +18,7 @@ namespace ConexionDB
             try
             {
 
-                SqlCommand ordCMD = new SqlCommand("select top 200  * from talleres.dbo.Cita order by idCita", serConn, trans);
+                SqlCommand ordCMD = new SqlCommand("select * from talleres.dbo.Cita", serConn, trans);
 
                 DataTable dt = new DataTable();
                 dt.Load(ordCMD.ExecuteReader());
