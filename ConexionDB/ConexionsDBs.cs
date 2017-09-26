@@ -34,22 +34,22 @@ namespace ConexionDB
             {
                 case Constants.conexiones.ASEPROTDesarrollo:
                     return Constants.ASEPROTDesarrolloStringConn;
-                    break;
+                    
                 case Constants.conexiones.ASEPROT:
                     return Constants.ASEPROTStringConn;
-                    break;
+                   
                 case Constants.conexiones.ASEPROTPruebas:
                     return Constants.ASEPROTPruebasStringConn;
-                    break;
+                   
                 case Constants.conexiones.Partidas:
                     return Constants.PartidasStringConn;
-                    break;
+                   
                 case Constants.conexiones.Talleres:
                     return Constants.TalleresStringConn;
-                    break;
+                   
                 default:
                     return "";
-                    break;
+                    
             }
         }
     }

@@ -21,7 +21,7 @@ namespace ConexionDB
                     Log(logMessage, w);
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ) { }
         }
 
         public void Log(string logMessage, TextWriter txtWriter) {
@@ -34,7 +34,7 @@ namespace ConexionDB
                 txtWriter.WriteLine("  :{0}", logMessage);
                 txtWriter.WriteLine("-------------------------------");
             }
-            catch (Exception ex) {
+            catch (Exception ) {
             }
         }
     }

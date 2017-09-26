@@ -67,6 +67,7 @@
     <Compile Include="Tar.cs" />
     <Compile Include="TraspasoPresupuesto.cs" />
     <Compile Include="Unidades.cs" />
+	<Compile Include="RelacionCotizacionTalleresASE.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

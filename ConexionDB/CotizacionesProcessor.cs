@@ -10,7 +10,7 @@ namespace ConexionDB
 {
     public class CotizacionesProcessor
     {
-        public static Cotizaciones GetCotizacion(long aIdCotizacion)
+        public static Cotizaciones GetCotizacion(SqlConnection serConn, long aIdCotizacion)
         {
             Cotizaciones CotizacionNueva = new Cotizaciones();
 
@@ -42,7 +42,7 @@ namespace ConexionDB
             if (dt.Rows.Count > 0)
                 date = DateTime.Parse(dt.Rows[0]["fechaCotizacion"].ToString());
 
-            serConn.Close();
+           serConn.Close();
             return date;
 
         }
@@ -67,18 +67,15 @@ namespace ConexionDB
             DataTable dt = new DataTable();
             dt.Load(cmd.ExecuteReader());
             decimal idTaller = 0;
-
+            
             if (dt.Rows.Count > 0)
-                idTaller = decimal.Parse(dt.Rows[0]["idCentroTrabajo"].ToString());
-
-            serConn.Close();
+                idTaller = decimal.Parse(dt.Rows[0]["idTaller"].ToString());
+            // errores generados por IdCentroTrabajo
+            serConn.Close(); 
             return idTaller;
         }
 
-        internal static Cotizaciones GetCotizacion(SqlConnection serConn, int idCotizacion)
-        {
-            throw new NotImplementedException();
-        }
+      
 
         private static int GetEstatusCotizacion(long aIdCotizacion)
         {
@@ -138,11 +135,11 @@ namespace ConexionDB
 
             SqlCommand cmd = new SqlCommand(@"IF (EXISTS(SELECT TOP 1 consecutivoCotizacion FROM [dbo].[Cotizaciones] WHERE idOrden = " + aIdOrden + ")) " +
                                                 @"BEGIN
-				                                    SELECT TOP 1 (consecutivoCotizacion + 1) as consecutivoCotizacion FROM [dbo].[Cotizaciones] WHERE idOrden = " + aIdOrden + " ORDER BY consecutivoCotizacion DESC" +
+				                                    SELECT TOP 1 (consecutivoCotizacion + 1) as consecutivoCotizacion FROM [dbo].[Cotizaciones] WHERE idOrden = " + aIdOrden + " ORDER BY consecutivoCotizacion DESC " +
                                                 @"END
 		                                    ELSE 
 			                                    BEGIN
-				                                    SELECT 1 as consecutivoCotizacion
+				                                    SELECT 1 as consecutivoCotizacion 
 			                                    END", serConn);
 
             DataTable dt = new DataTable();
@@ -165,7 +162,7 @@ namespace ConexionDB
             SqlCommand cmd = new SqlCommand(@"select O.numeroOrden + '-' + CONVERT(varchar(3),"+consecutivo+") as numeroCotizacion " +
                                             @"from RelacionCitaOrdenes RCO
                                               inner join Talleres..CotizacionMaestro CM on CM.idTrabajo = RCO.idTrabajoTalleres
-                                              inner join Ordenes O on O.idOrden = RCO.idOrdenAseprot
+                                              inner join Ordenes O on O.idOrden = RCO.idOrdenesAseprot
                                               where CM.idCotizacion = " + aIdCotizacion, serConn);
 
             DataTable dt = new DataTable();

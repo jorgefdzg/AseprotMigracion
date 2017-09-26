@@ -21,7 +21,10 @@ namespace ConexionDB
         public int idCatalogoTipoOrdenServicio { get; set; }
         public decimal? idPreorden { get; set; }
 
-        public void InsertData(SqlConnection cn, Cotizaciones cotizacion)
+
+
+
+        public static void InsertData(SqlConnection cn, Cotizaciones cotizacion, ref decimal IdCotizacionNueva)
         {
             LogWriter log = new LogWriter();
             try
@@ -67,16 +70,26 @@ namespace ConexionDB
                     else
                         cmd.Parameters.Add("@idPreorden", SqlDbType.Decimal).Value = cotizacion.idPreorden;
 
-                    cn.Open();
+                    
                     int rowsAffected = cmd.ExecuteNonQuery();
-                    cn.Close();
+                    
                     if (rowsAffected > 0)
+                    {
                         log.WriteInLog("Registro de cotización insertado con exito " + cotizacion.numeroCotizacion);
+                       
+                        SqlCommand cmd2 = new SqlCommand("select top 1 idCotizacion from Cotizaciones order by idCotizacion desc", cn);
+                        DataTable dt = new DataTable();
+                        dt.Load(cmd2.ExecuteReader());
+                        if (dt.Rows.Count > 0)
+                            IdCotizacionNueva = decimal.Parse(dt.Rows[0]["idCotizacion"].ToString());
+
+                        
+                    }
 
                 }
             }
             catch (Exception ex) {
-                log.WriteInLog("Error al insertar la orden " + cotizacion.numeroCotizacion + " Excepcion: " + ex.Message);
+                log.WriteInLog("Error al insertar la cotización " + cotizacion.numeroCotizacion + " Excepcion: " + ex.Message);
             }
         }
 
