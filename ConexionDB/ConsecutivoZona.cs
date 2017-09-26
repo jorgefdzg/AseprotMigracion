@@ -35,7 +35,7 @@ namespace ConexionDB
                     consecutivoZona.idZona = int.Parse(dr["idZona"].ToString());
                     consecutivoZona.idOsur = int.Parse(dr["idOsur"].ToString());
                     consecutivoZona.numeroConsecutivo = long.Parse(dr["numeroConsecutivo"].ToString());
-                    //consecutivoZona.fechaGeneracion = DateTime.Parse(dr["fechaGeneracion"].ToString());
+                    consecutivoZona.fechaGeneracion = DateTime.Parse(dr["fechaGeneracion"].ToString());
                     consecutivoZona.idTrabajo = int.Parse(dr["idTrabajo"].ToString());
                     //consecutivoZona.idCliente = int.Parse(dr["idCliente"].ToString());
                     consecZonaList.Add(consecutivoZona);

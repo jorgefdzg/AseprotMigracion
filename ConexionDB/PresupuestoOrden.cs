@@ -25,7 +25,7 @@ namespace ConexionDB
             if(serConn.State != ConnectionState.Open)
                 serConn.Open();
             Presupuesto accederPresupuesto = new Presupuesto();
-            List<Presupuesto> listaPresupuesto = accederPresupuesto.listarPresupuesto(serConn);
+            //List<Presupuesto> listaPresupuesto = accederPresupuesto.listarPresupuesto(serConn);
             List<ConsecutivoZona> listConsecutivoZona = ConsecutivoZona.listarConsecutivoZona(serConn);
             List<RelacionOsurPresupuesto> listaRelacionOsurPresupuesto = RelacionOsurPresupuesto.listarRelacionOsurPresupuesto(serConn);
             List<RelacionCitaOrdenes> listRelacionCitasOrdenes = RelacionCitaOrdenes.listarRelacionCitaOrdenes(serConn).Where(o => o.idTrabajoTalleres != null).ToList();
@@ -36,11 +36,11 @@ namespace ConexionDB
             List<PresupuestoOrden> listPresupuestoOrden = new List<PresupuestoOrden>();
             foreach (ConsecutivoZona consecutivoZona in listConsecutivoZona)
             {
-                Presupuesto presupuesto = listaPresupuesto.Find(o => o.Id == consecutivoZona.idOsur);
+                //Presupuesto presupuesto = listaPresupuesto.Find(o => o.Id == consecutivoZona.idOsur);
                 RelacionOsurPresupuesto relacionOsurPresu = listaRelacionOsurPresupuesto.Find(o => o.idOsur == consecutivoZona.idOsur);
                 RelacionCitaOrdenes relacionCitaOrdenes = listRelacionCitasOrdenes.Find(o => o.idTrabajoTalleres == consecutivoZona.idTrabajo);
-                if (relacionCitaOrdenes != null)
-                    Console.Write("aqui");
+                if (relacionCitaOrdenes == null)
+                    Console.Write("no existe relación de ordenes");
                 Ordenes orden = null;
                 Unidades unidad = null;
                 CentroTrabajos centroTrabajo = null;
@@ -52,15 +52,22 @@ namespace ConexionDB
                         unidad = listUnidades.Find(o => o.idUnidad == orden.idUnidad);
                         if(unidad != null)
                             centroTrabajo = listCentroTrabajo.Find(o => o.idCentroTrabajo == unidad.idCentroTrabajo);
+                        else
+                            Console.Write("no existe unidad");
                     }
+                    else
+                        Console.Write("no existe orden");
                 }
+                else
+                    Console.Write("no existe relación cita de ordenes");
                 
-                if (presupuesto != null && relacionOsurPresu != null && relacionCitaOrdenes != null && orden != null && unidad != null && centroTrabajo != null)
+                
+                if (relacionOsurPresu != null && relacionCitaOrdenes != null && orden != null && unidad != null && centroTrabajo != null)
                 {
                     PresupuestoOrden presupuestoOrden = new PresupuestoOrden();
                     presupuestoOrden.idPresupuesto = relacionOsurPresu.idPresupuesto;
                     presupuestoOrden.idOrden = relacionCitaOrdenes.idOrdenAseprot;
-                    presupuestoOrden.fechaAlta = presupuesto.FechaAlta;
+                    presupuestoOrden.fechaAlta = consecutivoZona.fechaGeneracion;
                     presupuestoOrden.idUsuario = 514;
                     presupuestoOrden.consecutivo = consecutivoZona.numeroConsecutivo;
                     presupuestoOrden.zona = consecutivoZona.idZona == 1 ? "N" : consecutivoZona.idZona == 2 ? "C" : consecutivoZona.idZona == 3 ? "P" : "G";
