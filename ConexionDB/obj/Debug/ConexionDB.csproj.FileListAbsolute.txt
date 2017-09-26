@@ -5,3 +5,10 @@ C:\Users\wsnadm\Documents\MigracionASEV2\ConexionDB\ConexionDB\obj\Debug\Conexio
 C:\Users\wsnadm\Documents\MigracionASEV2\ConexionDB\ConexionDB\obj\Debug\ConexionDB.csproj.CoreCompileInputs.cache
 C:\Users\wsnadm\Documents\MigracionASEV2\ConexionDB\ConexionDB\obj\Debug\ConexionDB.exe
 C:\Users\wsnadm\Documents\MigracionASEV2\ConexionDB\ConexionDB\obj\Debug\ConexionDB.pdb
+C:\Users\WSNADM\Desktop\Mario\GAProjects\ConexionDB\AseprotMigracion\ConexionDB\bin\Debug\ConexionDB.exe.config
+C:\Users\WSNADM\Desktop\Mario\GAProjects\ConexionDB\AseprotMigracion\ConexionDB\bin\Debug\ConexionDB.exe
+C:\Users\WSNADM\Desktop\Mario\GAProjects\ConexionDB\AseprotMigracion\ConexionDB\bin\Debug\ConexionDB.pdb
+C:\Users\WSNADM\Desktop\Mario\GAProjects\ConexionDB\AseprotMigracion\ConexionDB\obj\Debug\ConexionDB.csprojResolveAssemblyReference.cache
+C:\Users\WSNADM\Desktop\Mario\GAProjects\ConexionDB\AseprotMigracion\ConexionDB\obj\Debug\ConexionDB.csproj.CoreCompileInputs.cache
+C:\Users\WSNADM\Desktop\Mario\GAProjects\ConexionDB\AseprotMigracion\ConexionDB\obj\Debug\ConexionDB.exe
+C:\Users\WSNADM\Desktop\Mario\GAProjects\ConexionDB\AseprotMigracion\ConexionDB\obj\Debug\ConexionDB.pdb

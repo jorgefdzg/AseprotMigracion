@@ -58,6 +58,8 @@
     <Compile Include="Partidas.cs" />
     <Compile Include="Presupuesto.cs" />
     <Compile Include="PresupuestoOrden.cs" />
+    <Compile Include="ProcesoAutorizacion.cs" />
+    <Compile Include="ProcesoCopade.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RelacionCitaOrdenes.cs" />

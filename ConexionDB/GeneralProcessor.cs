@@ -18,7 +18,7 @@ namespace ConexionDB
             try
             {
 
-                SqlCommand ordCMD = new SqlCommand("select  * from talleres.dbo.Cita where idCita = 89", serConn, trans);
+                SqlCommand ordCMD = new SqlCommand("select top 200  * from talleres.dbo.Cita order by idCita", serConn, trans);
 
                 DataTable dt = new DataTable();
                 dt.Load(ordCMD.ExecuteReader());
@@ -53,7 +53,9 @@ namespace ConexionDB
             }
             catch (Exception aE)
             {
+                LogWriter log = new LogWriter();
                 Console.WriteLine("Ocurrio un error : " + aE.Message + "\r\n");
+                log.WriteInLog("Ocurrio un error : " + aE.Message + "\r\n");
                 trans.Rollback();
                 serConn.Close();
             }
@@ -69,7 +71,7 @@ namespace ConexionDB
 
 
                 serConn.Open();
-                SqlCommand cotCMD = new SqlCommand("select * from talleres.dbo.CotizacionMaestro", serConn);
+                SqlCommand cotCMD = new SqlCommand("select * from talleres.dbo.CotizacionMaestro where idTrabajo in (select idTrabajoTalleres from ASEPROTDesarrollo..RelacionCitaOrdenes)", serConn);
                 DataTable dt = new DataTable();
                 dt.Load(cotCMD.ExecuteReader());
                 serConn.Close();
@@ -87,27 +89,38 @@ namespace ConexionDB
             }
             catch (Exception aE)
             {
+                LogWriter log = new LogWriter();
                 Console.WriteLine("Ocurrio un error : " + aE.Message + "\r\n");
+                log.WriteInLog("Ocurrio un error : " + aE.Message + "\r\n");
             }
         }
         public static void migracion8()
         {
-            SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
-            SqlTransaction transaction = null;
-            Presupuesto p = new Presupuesto();
-            List<Presupuesto> presupuesto = p.listarPresupuesto(serConn);
-            foreach (Presupuesto presu in presupuesto)
-                p.InsertarPresupuesto(presu, serConn, transaction);
+            try
+            {
+                SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
+                SqlTransaction transaction = null;
+                Presupuesto p = new Presupuesto();
+                List<Presupuesto> presupuesto = p.listarPresupuesto(serConn);
+                foreach (Presupuesto presu in presupuesto)
+                    p.InsertarPresupuesto(presu, serConn, transaction);
 
-            PresupuestoOrden presupuestoOrden = new PresupuestoOrden();
-            List<PresupuestoOrden> listPresupuestoOrden = presupuestoOrden.listarPresupuestoOrden(serConn);
-            foreach (PresupuestoOrden presupuestoOrdenI in listPresupuestoOrden)
-                presupuestoOrden.InsertarPresupuesto(presupuestoOrdenI, serConn, transaction);
+                PresupuestoOrden presupuestoOrden = new PresupuestoOrden();
+                List<PresupuestoOrden> listPresupuestoOrden = presupuestoOrden.listarPresupuestoOrden(serConn);
+                foreach (PresupuestoOrden presupuestoOrdenI in listPresupuestoOrden)
+                    presupuestoOrden.InsertarPresupuesto(presupuestoOrdenI, serConn, transaction);
 
-            TraspasoPresupuesto traspasoPresupuesto = new TraspasoPresupuesto();
-            List<TraspasoPresupuesto> traspasoList = traspasoPresupuesto.listarTraspasoPresupuesto(serConn);
-            foreach (TraspasoPresupuesto traspaso in traspasoList)
-                traspasoPresupuesto.InsertarTraspaso(traspaso, serConn, transaction);
+                TraspasoPresupuesto traspasoPresupuesto = new TraspasoPresupuesto();
+                List<TraspasoPresupuesto> traspasoList = traspasoPresupuesto.listarTraspasoPresupuesto(serConn);
+                foreach (TraspasoPresupuesto traspaso in traspasoList)
+                    traspasoPresupuesto.InsertarTraspaso(traspaso, serConn, transaction);
+            }
+            catch (Exception aE)
+            {
+                LogWriter log = new LogWriter();
+                Console.WriteLine("Ocurrio un error : " + aE.Message + "\r\n");
+                log.WriteInLog("Ocurrio un error : " + aE.Message + "\r\n");
+            }
 
         }
 

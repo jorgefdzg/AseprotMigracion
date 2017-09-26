@@ -395,7 +395,8 @@ namespace ConexionDB
                         idEstatusOrden = estatus[i],
                         idUsuario = 514
                     };
-                    historicos.Add(historico);
+                    if(estatusOrden >= estatus[i])  //descomentar si se requiere que los estatus de talleres no sobrepasen el estatus de la orden
+                        historicos.Add(historico);
                 }else if(estatusOrden >= estatus[i])
                 {
                     switch (estatusOrden)

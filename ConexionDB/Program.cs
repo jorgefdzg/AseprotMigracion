@@ -13,6 +13,14 @@ namespace ConexionDB
     {
         static void Main(string[] args)
         {
+            GeneralProcessor.MigracionGeneral();
+            GeneralProcessor.MigracionCotizacion();
+            SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
+            CotizacionDetalle.GuardarCotizacionDetalleCompleto(serConn);
+            GeneralProcessor.migracion8();
+            ProcesoAutorizacion.GenerarAutorizacion();
+            ProcesoCopade.GenerarCopade();
+            Console.ReadLine();
             //InsertOrdenesData();
             //SqlConnection serConn = new SqlConnection(Constants.ASEPROTDesarrolloStringConn);
 

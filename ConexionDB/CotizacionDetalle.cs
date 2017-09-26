@@ -81,6 +81,7 @@ namespace ConexionDB
         {
             LogWriter log = new LogWriter();
             string retorno = string.Empty;
+            serConn.Open();
             SqlCommand cmd = new SqlCommand(@"insert into CotizacionDetalle (idCotizacion,costo,cantidad,venta,idPartida,idEstatusPartida) 
                       select relCot.idCotizacionASE, det.precio as Costo,det.cantidad, pvta.precioCliente as Venta, par.idPartida,
                       case when det.idEstatus = 8 then 1 when det.idEstatus = 25 then 1 when det.idEstatus = 9 then 2 when det.idEstatus = 10 then 4 end as Estatus 
@@ -91,10 +92,11 @@ namespace ConexionDB
 					  inner join ASEPROTDesarrollo.dbo.Ordenes ord on ord.idOrden = coti.idOrden
 					  inner join ASEPROTDesarrollo.dbo.Unidades uni on uni.idUnidad = ord.idUnidad
                       inner join talleres.dbo.item itm on itm.idItem = det.idElemento
-                      inner join Partidas.dbo.Partida par on par.partida = itm.numeroPartida and par.idUnidad = uni.idTipoUnidad");
+                      inner join Partidas.dbo.Partida par on par.partida = itm.numeroPartida and par.idUnidad = uni.idTipoUnidad", serConn);
             int res = cmd.ExecuteNonQuery();
+            serConn.Close();
             if (res > 0)
-                retorno = "Registro de Cotizaciones Detalle insertado con exito : " + res + " registor insertados.";
+                retorno = res + " registros de Cotizaciones Detalle insertado con éxito.";
             log.WriteInLog(retorno);
             return retorno;
         }
